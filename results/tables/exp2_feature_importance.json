@@ -1,0 +1,157 @@
+{
+  "v0": {
+    "variant": "v0",
+    "class_weight": "plain",
+    "top_10_features": [
+      {
+        "feature": "p_has_approved",
+        "importance": 0.41556
+      },
+      {
+        "feature": "p_num_reviewers",
+        "importance": 0.10436
+      },
+      {
+        "feature": "p_num_reviews",
+        "importance": 0.07731
+      },
+      {
+        "feature": "p_num_issue_comments",
+        "importance": 0.03258
+      },
+      {
+        "feature": "m_frac_added",
+        "importance": 0.02397
+      },
+      {
+        "feature": "t_body_len",
+        "importance": 0.021
+      },
+      {
+        "feature": "t_body_wordcount",
+        "importance": 0.01948
+      },
+      {
+        "feature": "t_commit_msg_len_total",
+        "importance": 0.01786
+      },
+      {
+        "feature": "m_avg_file_churn",
+        "importance": 0.01762
+      },
+      {
+        "feature": "t_commit_msg_len_mean",
+        "importance": 0.01651
+      }
+    ],
+    "importance_by_category": {
+      "P -- process/forbidden (V0 only)": 0.689,
+      "M -- code modification": 0.1462,
+      "T -- textual": 0.1179,
+      "S -- code structure": 0.0469
+    }
+  },
+  "v1": {
+    "variant": "v1",
+    "class_weight": "plain",
+    "top_10_features": [
+      {
+        "feature": "m_frac_added",
+        "importance": 0.07125
+      },
+      {
+        "feature": "t_body_len",
+        "importance": 0.06524
+      },
+      {
+        "feature": "t_body_wordcount",
+        "importance": 0.06345
+      },
+      {
+        "feature": "t_commit_msg_len_total",
+        "importance": 0.061
+      },
+      {
+        "feature": "t_commit_msg_len_first",
+        "importance": 0.05809
+      },
+      {
+        "feature": "t_title_len",
+        "importance": 0.0577
+      },
+      {
+        "feature": "t_commit_msg_len_mean",
+        "importance": 0.05661
+      },
+      {
+        "feature": "m_avg_file_churn",
+        "importance": 0.05167
+      },
+      {
+        "feature": "m_net_change",
+        "importance": 0.04449
+      },
+      {
+        "feature": "m_additions",
+        "importance": 0.04314
+      }
+    ],
+    "importance_by_category": {
+      "M -- code modification": 0.4419,
+      "T -- textual": 0.4002,
+      "S -- code structure": 0.1579
+    }
+  },
+  "v2": {
+    "variant": "v2",
+    "class_weight": "plain",
+    "top_10_features": [
+      {
+        "feature": "author_prior_merge_rate",
+        "importance": 0.10042
+      },
+      {
+        "feature": "m_frac_added",
+        "importance": 0.06109
+      },
+      {
+        "feature": "t_commit_msg_len_first",
+        "importance": 0.06039
+      },
+      {
+        "feature": "t_body_len",
+        "importance": 0.05882
+      },
+      {
+        "feature": "t_body_wordcount",
+        "importance": 0.05765
+      },
+      {
+        "feature": "t_title_len",
+        "importance": 0.05534
+      },
+      {
+        "feature": "t_commit_msg_len_mean",
+        "importance": 0.05406
+      },
+      {
+        "feature": "author_prior_pr_count",
+        "importance": 0.05208
+      },
+      {
+        "feature": "m_avg_file_churn",
+        "importance": 0.05031
+      },
+      {
+        "feature": "m_additions",
+        "importance": 0.0412
+      }
+    ],
+    "importance_by_category": {
+      "M -- code modification": 0.3793,
+      "T -- textual": 0.3222,
+      "author history (V2 only)": 0.1525,
+      "S -- code structure": 0.1461
+    }
+  }
+}

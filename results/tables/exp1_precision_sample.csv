@@ -1,0 +1,41 @@
+repo,number,title,author_login,author_type,is_ai_authored,ai_authored_kind,ai_authored_method,ai_authored_confidence,is_ai_reviewed,ai_reviewer_logins_str,flags_checked,verdict
+microsoft/vscode,308573,"In a workspace with multiple repos, add the ability to sort ",jackheuberger,User,False,,typename_user,0.9,True,copilot-pull-request-reviewer,reviewed=OK,correct
+microsoft/vscode,317968,Discover user-level Copilot instructions in ~/.copilot,copilot-swe-agent,Bot,True,agent_authored,allowlist_coding_agent+bot,0.95,True,copilot-pull-request-reviewer,authored=OK;reviewed=OK,correct
+home-assistant/core,149694,"Fix ContextVar error log for custom components, improve test",copilot-swe-agent,Bot,True,agent_authored,allowlist_coding_agent+bot,0.95,True,copilot-pull-request-reviewer,authored=OK;reviewed=OK,correct
+dotnet/aspnetcore,66856,[release/10.0] Add 1ES Unofficial pipeline for Components E2,copilot-swe-agent,Bot,True,agent_authored,allowlist_coding_agent+bot,0.95,True,copilot-pull-request-reviewer,authored=OK;reviewed=OK,correct
+microsoft/vscode,326776,chore: bump electron@42.7.0,deepak1556,User,False,,typename_user,0.9,True,copilot-pull-request-reviewer,reviewed=OK,correct
+dotnet/runtime,130802,"Implement RFC 9659 compliance for ""zstd"" HttpContent compres",rzikm,User,False,,typename_user,0.9,True,copilot-pull-request-reviewer,reviewed=OK,correct
+dotnet/aspnetcore,67757,Harden wildcard matching with empty segments inside,cincuranet,User,False,,typename_user,0.9,True,copilot-pull-request-reviewer,reviewed=OK,correct
+home-assistant/core,176653,Speed up entity_registry.async_entries_for_device,emontnemery,User,False,,typename_user,0.9,True,copilot-pull-request-reviewer,reviewed=OK,correct
+dotnet/runtime,131155,Fix HWIntrinsic codegen for elided scalar/vector reinterpret,tannergooding,User,False,,typename_user,0.9,True,copilot-pull-request-reviewer,reviewed=OK,correct
+home-assistant/core,176628,Update vizio config entry host on zeroconf rediscovery,raman325,User,False,,typename_user,0.9,True,copilot-pull-request-reviewer,reviewed=OK,correct
+dotnet/runtime,129644,Fix x64 ToScalar XMM→GPR codegen for contained CreateScalar ,copilot-swe-agent,Bot,True,agent_authored,allowlist_coding_agent+bot,0.95,True,copilot-pull-request-reviewer,authored=OK;reviewed=OK,correct
+dotnet/runtime,130608,Fix DNS_ADDR_ARRAY.MaxCount: use byte size instead of elemen,copilot-swe-agent,Bot,True,agent_authored,allowlist_coding_agent+bot,0.95,True,copilot-pull-request-reviewer,authored=OK;reviewed=OK,correct
+home-assistant/core,176345,Fix duplicate Hikvision binary sensor unique IDs,gunjanjaswal,User,False,,typename_user,0.9,True,copilot-pull-request-reviewer,reviewed=OK,correct
+dotnet/aspnetcore,67587,Update Microsoft.OpenApi packages to 2.9.0 from OpenAPI.NET ,copilot-swe-agent,Bot,True,agent_authored,allowlist_coding_agent+bot,0.95,False,,authored=OK,correct
+dotnet/aspnetcore,67713,Suppress by-design CodeQL alerts,wtgodbe,User,False,,typename_user,0.9,True,copilot-pull-request-reviewer,reviewed=OK,correct
+dotnet/runtime,130344,Fix failing symlink tests (10.0),alinpahontu2912,User,False,,typename_user,0.9,True,copilot-pull-request-reviewer,reviewed=OK,correct
+microsoft/vscode,326842,Capture mic via AudioWorkletNode instead of deprecated Scrip,meganrogge,User,False,,typename_user,0.9,True,copilot-pull-request-reviewer,reviewed=OK,correct
+microsoft/vscode,320239,Browser: never focus a URL suggestion by default,kycutler,User,False,,typename_user,0.9,True,copilot-pull-request-reviewer,reviewed=OK,correct
+dotnet/runtime,130946,Fix side-effect reordering when folding constant-zero-mask B,tannergooding,User,False,,typename_user,0.9,True,copilot-pull-request-reviewer,reviewed=OK,correct
+dotnet/aspnetcore,66997,Fix Invalid Trim Warning Suppression in BindConverter.cs,surya3655,User,False,,typename_user,0.9,True,copilot-pull-request-reviewer,reviewed=OK,correct
+dotnet/runtime,130919,[WIP] Fix Release path to restore original AssertFreeThreade,copilot-swe-agent,Bot,True,agent_authored,allowlist_coding_agent+bot,0.95,False,,authored=OK,correct
+microsoft/vscode,318750,agents: fix Mark as Done on cancelled new chat session,ulugbekna,User,False,,typename_user,0.9,True,copilot-pull-request-reviewer,reviewed=OK,correct
+home-assistant/core,156794,Fix hvv_departures to pass config_entry explicitly to DataUp,copilot-swe-agent,Bot,True,agent_authored,allowlist_coding_agent+bot,0.95,True,copilot-pull-request-reviewer,authored=OK;reviewed=OK,correct
+dotnet/aspnetcore,67702,Run Blazor E2E tests on Microsoft.Extensions.Validation chan,oroztocil,User,False,,typename_user,0.9,True,copilot-pull-request-reviewer,reviewed=OK,correct
+home-assistant/core,176749,Bump pydrawise to 2026.7.0,dknowles2,User,False,,typename_user,0.9,True,copilot-pull-request-reviewer,reviewed=OK,correct
+dotnet/aspnetcore,67455,Fix ambiguous hidden-property lookup in validation,copilot-swe-agent,Bot,True,agent_authored,allowlist_coding_agent+bot,0.95,True,copilot-pull-request-reviewer,authored=OK;reviewed=OK,correct
+home-assistant/core,177076,Bump pybravia to 0.5.1,Drafteed,User,False,,typename_user,0.9,True,copilot-pull-request-reviewer,reviewed=OK,correct
+dotnet/aspnetcore,67914,Expose InitialItemIndex parameter and ScrollToItemAsync meth,ilonatommy,User,False,,typename_user,0.9,True,copilot-pull-request-reviewer,reviewed=OK,correct
+dotnet/aspnetcore,66859,Throw HttpSysException with HttpInitialize status details,copilot-swe-agent,Bot,True,agent_authored,allowlist_coding_agent+bot,0.95,True,copilot-pull-request-reviewer,authored=OK;reviewed=OK,correct
+microsoft/vscode,326982,Extend built-in on-device dictation to editor and terminal,meganrogge,User,False,,typename_user,0.9,True,copilot-pull-request-reviewer,reviewed=OK,correct
+microsoft/vscode,326894,Add more model picker diagnostics and cleanup architecture,lramos15,User,False,,typename_user,0.9,True,copilot-pull-request-reviewer,reviewed=OK,correct
+home-assistant/core,176946,Adapt lutron to new device registry API,emontnemery,User,False,,typename_user,0.9,True,copilot-pull-request-reviewer,reviewed=OK,correct
+microsoft/vscode,324408,Gracefully exit prompt categorizer when no utility model con,copilot-swe-agent,Bot,True,agent_authored,allowlist_coding_agent+bot,0.95,True,copilot-pull-request-reviewer,authored=OK;reviewed=OK,correct
+home-assistant/core,164567,Clarify shutdown behavior: entries are not unloaded on HA st,copilot-swe-agent,Bot,True,agent_authored,allowlist_coding_agent+bot,0.95,False,,authored=OK,correct
+microsoft/vscode,319879,Align NES recording bookmark with prompt-build snapshot,ulugbekna,User,False,,typename_user,0.9,True,copilot-pull-request-reviewer,reviewed=OK,correct
+dotnet/aspnetcore,67764,Harden test-quarantine workflow guardrails (B1/B2/B3),wtgodbe,User,False,,typename_user,0.9,True,copilot-pull-request-reviewer,reviewed=OK,correct
+home-assistant/core,176328,Add local Powerwall control for Teslemetry energy sites,Bre77,User,False,,typename_user,0.9,True,copilot-pull-request-reviewer,reviewed=OK,correct
+microsoft/semantic-kernel,14043,Python: docs: add Vaultak runtime security integration (filt,samueloladji-beep,User,False,,typename_user,0.9,True,copilot-pull-request-reviewer,reviewed=OK,correct
+microsoft/semantic-kernel,14116,.Net: Move MEVD projects to separate solution,westey-m,User,False,,typename_user,0.9,True,copilot-pull-request-reviewer,reviewed=OK,correct
+microsoft/semantic-kernel,14158,Bump mcp from 1.10.1 to 1.27.2 in /python/samples/demos/mcp_,dependabot,Bot,False,,typename_bot_known_automation,0.95,True,copilot-pull-request-reviewer,reviewed=OK,correct

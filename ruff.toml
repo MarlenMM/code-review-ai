@@ -1,0 +1,18 @@
+# Deliberately narrow lint scope for CI (`.github/workflows/ci.yml`).
+#
+# Ruff's full default rule set produces ~140 findings on this codebase --
+# almost entirely line-length/style, accumulated over ~25 steps of work that
+# were never linted as they went. Gating CI on that would mean either a
+# large, risk-for-no-behavioral-benefit reformatting pass over already-
+# tested, already-reported-on experiment code, or an immediately-red CI
+# badge on a portfolio repo. Neither is worth it for a "basic CI" ask
+# (plan Section 9 row 26).
+#
+# F (Pyflakes) + E9 (syntax errors) is the pragmatic middle ground: it
+# catches real bugs -- unused imports, undefined names, unused variables,
+# syntax errors -- without demanding a repo-wide style rewrite. The 12
+# real findings this surfaced (all safe: unused imports, one redundant
+# f-string, two unused locals) were fixed as part of adding this config,
+# so the badge starts green and stays meaningful.
+[lint]
+select = ["F", "E9"]

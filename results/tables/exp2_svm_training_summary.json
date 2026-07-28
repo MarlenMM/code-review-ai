@@ -1,0 +1,170 @@
+{
+  "v0": {
+    "n_train": 890,
+    "n_test": 224,
+    "split_cutoffs": {
+      "dotnet/aspnetcore": {
+        "n_train": 149,
+        "n_test": 38,
+        "train_max_created_at": "2026-07-16T02:03:56+00:00",
+        "test_min_created_at": "2026-07-16T08:43:46+00:00"
+      },
+      "dotnet/runtime": {
+        "n_train": 151,
+        "n_test": 38,
+        "train_max_created_at": "2026-07-20T15:09:20+00:00",
+        "test_min_created_at": "2026-07-20T15:09:35+00:00"
+      },
+      "home-assistant/core": {
+        "n_train": 215,
+        "n_test": 54,
+        "train_max_created_at": "2026-07-20T18:29:35+00:00",
+        "test_min_created_at": "2026-07-20T18:41:29+00:00"
+      },
+      "microsoft/semantic-kernel": {
+        "n_train": 219,
+        "n_test": 55,
+        "train_max_created_at": "2026-05-13T10:30:53+00:00",
+        "test_min_created_at": "2026-05-14T01:04:29+00:00"
+      },
+      "microsoft/vscode": {
+        "n_train": 156,
+        "n_test": 39,
+        "train_max_created_at": "2026-07-21T19:03:46+00:00",
+        "test_min_created_at": "2026-07-21T19:15:30+00:00"
+      }
+    },
+    "configs": {
+      "plain": {
+        "best_params": {
+          "model__estimator__C": 10,
+          "model__estimator__gamma": 0.01
+        },
+        "best_cv_roc_auc": 0.953,
+        "train_seconds": 1.8,
+        "model_path": "results/models/svm_v0_plain.joblib"
+      },
+      "balanced": {
+        "best_params": {
+          "model__estimator__C": 10,
+          "model__estimator__gamma": 0.01
+        },
+        "best_cv_roc_auc": 0.953,
+        "train_seconds": 0.6,
+        "model_path": "results/models/svm_v0_balanced.joblib"
+      }
+    }
+  },
+  "v1": {
+    "n_train": 890,
+    "n_test": 224,
+    "split_cutoffs": {
+      "dotnet/aspnetcore": {
+        "n_train": 149,
+        "n_test": 38,
+        "train_max_created_at": "2026-07-16T02:03:56+00:00",
+        "test_min_created_at": "2026-07-16T08:43:46+00:00"
+      },
+      "dotnet/runtime": {
+        "n_train": 151,
+        "n_test": 38,
+        "train_max_created_at": "2026-07-20T15:09:20+00:00",
+        "test_min_created_at": "2026-07-20T15:09:35+00:00"
+      },
+      "home-assistant/core": {
+        "n_train": 215,
+        "n_test": 54,
+        "train_max_created_at": "2026-07-20T18:29:35+00:00",
+        "test_min_created_at": "2026-07-20T18:41:29+00:00"
+      },
+      "microsoft/semantic-kernel": {
+        "n_train": 219,
+        "n_test": 55,
+        "train_max_created_at": "2026-05-13T10:30:53+00:00",
+        "test_min_created_at": "2026-05-14T01:04:29+00:00"
+      },
+      "microsoft/vscode": {
+        "n_train": 156,
+        "n_test": 39,
+        "train_max_created_at": "2026-07-21T19:03:46+00:00",
+        "test_min_created_at": "2026-07-21T19:15:30+00:00"
+      }
+    },
+    "configs": {
+      "plain": {
+        "best_params": {
+          "model__estimator__C": 1,
+          "model__estimator__gamma": 0.1
+        },
+        "best_cv_roc_auc": 0.7205,
+        "train_seconds": 0.6,
+        "model_path": "results/models/svm_v1_plain.joblib"
+      },
+      "balanced": {
+        "best_params": {
+          "model__estimator__C": 1,
+          "model__estimator__gamma": 0.1
+        },
+        "best_cv_roc_auc": 0.7325,
+        "train_seconds": 0.7,
+        "model_path": "results/models/svm_v1_balanced.joblib"
+      }
+    }
+  },
+  "v2": {
+    "n_train": 890,
+    "n_test": 224,
+    "split_cutoffs": {
+      "dotnet/aspnetcore": {
+        "n_train": 149,
+        "n_test": 38,
+        "train_max_created_at": "2026-07-16T02:03:56+00:00",
+        "test_min_created_at": "2026-07-16T08:43:46+00:00"
+      },
+      "dotnet/runtime": {
+        "n_train": 151,
+        "n_test": 38,
+        "train_max_created_at": "2026-07-20T15:09:20+00:00",
+        "test_min_created_at": "2026-07-20T15:09:35+00:00"
+      },
+      "home-assistant/core": {
+        "n_train": 215,
+        "n_test": 54,
+        "train_max_created_at": "2026-07-20T18:29:35+00:00",
+        "test_min_created_at": "2026-07-20T18:41:29+00:00"
+      },
+      "microsoft/semantic-kernel": {
+        "n_train": 219,
+        "n_test": 55,
+        "train_max_created_at": "2026-05-13T10:30:53+00:00",
+        "test_min_created_at": "2026-05-14T01:04:29+00:00"
+      },
+      "microsoft/vscode": {
+        "n_train": 156,
+        "n_test": 39,
+        "train_max_created_at": "2026-07-21T19:03:46+00:00",
+        "test_min_created_at": "2026-07-21T19:15:30+00:00"
+      }
+    },
+    "configs": {
+      "plain": {
+        "best_params": {
+          "model__estimator__C": 1,
+          "model__estimator__gamma": "auto"
+        },
+        "best_cv_roc_auc": 0.774,
+        "train_seconds": 0.6,
+        "model_path": "results/models/svm_v2_plain.joblib"
+      },
+      "balanced": {
+        "best_params": {
+          "model__estimator__C": 1,
+          "model__estimator__gamma": 0.1
+        },
+        "best_cv_roc_auc": 0.7788,
+        "train_seconds": 0.7,
+        "model_path": "results/models/svm_v2_balanced.joblib"
+      }
+    }
+  }
+}

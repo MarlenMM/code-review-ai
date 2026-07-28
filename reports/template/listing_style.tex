@@ -1,0 +1,71 @@
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\definecolor{lightgreen}{rgb}{0,0.4,0}
+\definecolor{lightred}{rgb}{0.4,0,0}
+
+\definecolor{mygray}{gray}{.9}
+
+% \lstdefinestyle{mystyle}{
+\lstset{
+    %backgroundcolor=\color{backcolour},   
+    commentstyle=\color{brown},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\tiny,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=none,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    escapeinside={<@}{@>}
+}
+
+% \lstset{
+% basicstyle=\ttfamily\bfseries\footnotesize,
+%   morekeywords={virtualinvoke},
+%   keywordstyle=,
+%   ndkeywordstyle=\color{red},
+%   commentstyle=\color{gray},
+%   stringstyle=\color{green},
+%   numbers=none,
+%   breaklines=true,
+%   numberstyle=\ttfamily\footnotesize\color{gray},
+%   stepnumber=1,
+%   numbersep=6pt,
+%   backgroundcolor=\color{white},
+%   tabsize=4,
+%   showspaces=false,
+%   showstringspaces=false,
+%   xleftmargin=6pt,
+%   captionpos=t
+% }
+
+\lstdefinelanguage{JavaScript}{
+  keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break, export, static, const, let, class, void, async, await, interface, extends, public, this},
+  % basicstyle=\linespread{1.0}\ttfamily\footnotesize,
+  % keywordstyle= \color{violet}\bfseries,
+  ndkeywords={class, export, boolean, throw, implements, import, this},
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  frame=lines,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  % commentstyle=\color{gray}\ttfamily,
+  % stringstyle=\color{blue}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+

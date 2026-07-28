@@ -1,0 +1,31 @@
+{
+  "n_files_total": 27110,
+  "n_files_unsupported_language": 11867,
+  "python": {
+    "n_files": 1506,
+    "n_files_with_patch": 1475,
+    "n_files_no_patch": 31,
+    "n_hunks_attempted": 3142,
+    "n_hunks_parsed_ok": 1098,
+    "hunk_parse_rate": 0.3495,
+    "n_hunks_cfg_ok": 802,
+    "cfg_success_rate_given_parsed": 0.7304
+  },
+  "typescript": {
+    "n_files": 7505,
+    "n_files_with_patch": 6533,
+    "n_files_no_patch": 972,
+    "n_hunks_attempted": 10365,
+    "n_hunks_parsed_ok": 6159,
+    "hunk_parse_rate": 0.5942
+  },
+  "csharp": {
+    "n_files": 6232,
+    "n_files_with_patch": 5819,
+    "n_files_no_patch": 413,
+    "n_hunks_attempted": 14843,
+    "n_hunks_parsed_ok": 5521,
+    "hunk_parse_rate": 0.372
+  },
+  "elapsed_seconds": 8.6
+}

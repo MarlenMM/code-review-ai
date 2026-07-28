@@ -1,0 +1,88 @@
+{
+  "name": "code-review-ai",
+  "displayName": "Code Review AI",
+  "description": "Review your current uncommitted changes: a merge-probability prediction plus AI-generated review comments, powered by the Code Review AI FastAPI backend (src/api/main.py).",
+  "version": "0.0.1",
+  "publisher": "MarlenMM",
+  "private": true,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MarlenMM/code-review-ai"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "codeReviewAi.reviewCurrentChanges",
+        "title": "Review Current Changes",
+        "category": "Code Review AI"
+      },
+      {
+        "command": "codeReviewAi.clearHighlights",
+        "title": "Clear Review Highlights",
+        "category": "Code Review AI"
+      },
+      {
+        "command": "codeReviewAi.jumpToComment",
+        "title": "Jump To Review Comment",
+        "category": "Code Review AI"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "codeReviewAi.jumpToComment",
+          "when": "false"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Code Review AI",
+      "properties": {
+        "codeReviewAi.backendUrl": {
+          "type": "string",
+          "default": "http://127.0.0.1:8000",
+          "description": "Base URL of the Code Review AI FastAPI backend (src/api/main.py)."
+        },
+        "codeReviewAi.mode": {
+          "type": "string",
+          "enum": [
+            "fast",
+            "deep"
+          ],
+          "enumDescriptions": [
+            "ML-only merge probability. Instant, free, no network call beyond localhost.",
+            "Also generates review comments via a live LLM call. Uses real, shared API quota."
+          ],
+          "default": "fast",
+          "description": "Which backend mode to request."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -w -p ./",
+    "pretest": "npm run compile",
+    "test": "node --test out/test/*.test.js",
+    "test:integration": "npm run compile && node ./out/test/runTest.js",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^20.14.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/test-electron": "^3.1.0",
+    "@vscode/vsce": "^3.9.2",
+    "mocha": "^11.7.6",
+    "typescript": "^5.4.0"
+  }
+}

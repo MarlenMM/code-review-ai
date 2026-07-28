@@ -1,0 +1,673 @@
+{
+  "generated_at": "2026-07-22T23:12:40.392193+00:00",
+  "dataset": {
+    "total_prs": 1494,
+    "repos": [
+      "dotnet/aspnetcore",
+      "dotnet/runtime",
+      "home-assistant/core",
+      "microsoft/semantic-kernel",
+      "microsoft/vscode"
+    ],
+    "prs_per_repo": {
+      "dotnet/aspnetcore": 299,
+      "dotnet/runtime": 299,
+      "home-assistant/core": 300,
+      "microsoft/semantic-kernel": 297,
+      "microsoft/vscode": 299
+    }
+  },
+  "merge_status": {
+    "pooled": {
+      "merged": 1075,
+      "not_merged": 419,
+      "total": 1494,
+      "merge_rate": 0.7195
+    },
+    "per_repo": {
+      "dotnet/aspnetcore": {
+        "merged": 201,
+        "not_merged": 98,
+        "total": 299,
+        "merge_rate": 0.6722
+      },
+      "dotnet/runtime": {
+        "merged": 245,
+        "not_merged": 54,
+        "total": 299,
+        "merge_rate": 0.8194
+      },
+      "home-assistant/core": {
+        "merged": 219,
+        "not_merged": 81,
+        "total": 300,
+        "merge_rate": 0.73
+      },
+      "microsoft/semantic-kernel": {
+        "merged": 187,
+        "not_merged": 110,
+        "total": 297,
+        "merge_rate": 0.6296
+      },
+      "microsoft/vscode": {
+        "merged": 223,
+        "not_merged": 76,
+        "total": 299,
+        "merge_rate": 0.7458
+      }
+    }
+  },
+  "class_balance_note": "Overall merge rate is 72.0% (1075 merged / 419 not merged out of 1494), a moderate class imbalance typical of mature, actively-maintained repos where most closed PRs eventually get merged. Experiment 2's training should account for this (class-weighting / reporting minority-class recall) rather than rely on raw accuracy.",
+  "review_comment_count": {
+    "pooled": {
+      "n": 1494,
+      "mean": 4.251,
+      "median": 1.0,
+      "std": 12.4,
+      "min": 0.0,
+      "max": 242.0,
+      "p90": 10.0,
+      "p99": 50.13999999999987,
+      "zero_count": 701
+    },
+    "per_repo": {
+      "dotnet/aspnetcore": {
+        "n": 299,
+        "mean": 3.278,
+        "median": 0.0,
+        "std": 7.303,
+        "min": 0.0,
+        "max": 81.0,
+        "p90": 9.199999999999989,
+        "p99": 31.079999999999927,
+        "zero_count": 156
+      },
+      "dotnet/runtime": {
+        "n": 299,
+        "mean": 6.742,
+        "median": 2.0,
+        "std": 14.292,
+        "min": 0.0,
+        "max": 142.0,
+        "p90": 16.0,
+        "p99": 53.99999999999909,
+        "zero_count": 102
+      },
+      "home-assistant/core": {
+        "n": 300,
+        "mean": 7.13,
+        "median": 1.0,
+        "std": 21.381,
+        "min": 0.0,
+        "max": 242.0,
+        "p90": 16.100000000000023,
+        "p99": 100.12999999999988,
+        "zero_count": 141
+      },
+      "microsoft/semantic-kernel": {
+        "n": 297,
+        "mean": 2.31,
+        "median": 0.0,
+        "std": 4.598,
+        "min": 0.0,
+        "max": 37.0,
+        "p90": 7.0,
+        "p99": 23.08000000000004,
+        "zero_count": 171
+      },
+      "microsoft/vscode": {
+        "n": 299,
+        "mean": 1.773,
+        "median": 1.0,
+        "std": 2.751,
+        "min": 0.0,
+        "max": 19.0,
+        "p90": 4.199999999999989,
+        "p99": 13.019999999999982,
+        "zero_count": 131
+      }
+    }
+  },
+  "reviewer_count": {
+    "pooled": {
+      "n": 1494,
+      "mean": 2.457,
+      "median": 2.0,
+      "std": 1.443,
+      "min": 0.0,
+      "max": 10.0,
+      "p90": 4.0,
+      "p99": 6.0,
+      "zero_count": 172
+    },
+    "per_repo": {
+      "dotnet/aspnetcore": {
+        "n": 299,
+        "mean": 2.084,
+        "median": 2.0,
+        "std": 1.505,
+        "min": 0.0,
+        "max": 6.0,
+        "p90": 4.0,
+        "p99": 6.0,
+        "zero_count": 61
+      },
+      "dotnet/runtime": {
+        "n": 299,
+        "mean": 2.993,
+        "median": 3.0,
+        "std": 1.472,
+        "min": 0.0,
+        "max": 7.0,
+        "p90": 5.0,
+        "p99": 6.019999999999982,
+        "zero_count": 17
+      },
+      "home-assistant/core": {
+        "n": 300,
+        "mean": 2.377,
+        "median": 2.0,
+        "std": 1.233,
+        "min": 0.0,
+        "max": 10.0,
+        "p90": 4.0,
+        "p99": 5.0,
+        "zero_count": 19
+      },
+      "microsoft/semantic-kernel": {
+        "n": 297,
+        "mean": 2.529,
+        "median": 3.0,
+        "std": 1.56,
+        "min": 0.0,
+        "max": 6.0,
+        "p90": 4.0,
+        "p99": 6.0,
+        "zero_count": 39
+      },
+      "microsoft/vscode": {
+        "n": 299,
+        "mean": 2.304,
+        "median": 2.0,
+        "std": 1.26,
+        "min": 0.0,
+        "max": 6.0,
+        "p90": 4.0,
+        "p99": 5.0,
+        "zero_count": 36
+      }
+    }
+  },
+  "pr_length": {
+    "pooled": {
+      "n": 1494,
+      "mean": 17592.17,
+      "median": 57.0,
+      "std": 408301.293,
+      "min": 0.0,
+      "max": 14285506.0,
+      "p90": 702.5000000000007,
+      "p99": 9549.049999999941,
+      "zero_count": 33
+    },
+    "per_repo": {
+      "dotnet/aspnetcore": {
+        "n": 299,
+        "mean": 326.304,
+        "median": 72.0,
+        "std": 756.475,
+        "min": 0.0,
+        "max": 6822.0,
+        "p90": 753.7999999999998,
+        "p99": 4365.7599999999975,
+        "zero_count": 2
+      },
+      "dotnet/runtime": {
+        "n": 299,
+        "mean": 48908.388,
+        "median": 51.0,
+        "std": 826131.149,
+        "min": 0.0,
+        "max": 14285506.0,
+        "p90": 565.1999999999998,
+        "p99": 39464.65999999891,
+        "zero_count": 9
+      },
+      "home-assistant/core": {
+        "n": 300,
+        "mean": 373.873,
+        "median": 43.0,
+        "std": 1337.206,
+        "min": 0.0,
+        "max": 12958.0,
+        "p90": 661.3000000000001,
+        "p99": 6383.049999999979,
+        "zero_count": 6
+      },
+      "microsoft/semantic-kernel": {
+        "n": 297,
+        "mean": 462.909,
+        "median": 72.0,
+        "std": 1364.21,
+        "min": 0.0,
+        "max": 10638.0,
+        "p90": 792.4000000000012,
+        "p99": 8396.00000000001,
+        "zero_count": 2
+      },
+      "microsoft/vscode": {
+        "n": 299,
+        "mean": 37832.385,
+        "median": 36.0,
+        "std": 387873.809,
+        "min": 0.0,
+        "max": 4851511.0,
+        "p90": 627.7999999999996,
+        "p99": 93296.97999996011,
+        "zero_count": 14
+      }
+    }
+  },
+  "labels": {
+    "pooled_top": [
+      {
+        "label": "cla-signed",
+        "count": 261
+      },
+      {
+        "label": "small-pr",
+        "count": 169
+      },
+      {
+        "label": ".NET",
+        "count": 131
+      },
+      {
+        "label": "has-tests",
+        "count": 129
+      },
+      {
+        "label": "python",
+        "count": 120
+      },
+      {
+        "label": "by-code-owner",
+        "count": 107
+      },
+      {
+        "label": "code-quality",
+        "count": 88
+      },
+      {
+        "label": "Quality Scale: No score",
+        "count": 87
+      },
+      {
+        "label": "community-contribution",
+        "count": 81
+      },
+      {
+        "label": "dependencies",
+        "count": 71
+      },
+      {
+        "label": "area-blazor",
+        "count": 67
+      },
+      {
+        "label": "Top 200",
+        "count": 66
+      },
+      {
+        "label": "new-feature",
+        "count": 63
+      },
+      {
+        "label": "dependency",
+        "count": 58
+      },
+      {
+        "label": "core",
+        "count": 56
+      },
+      {
+        "label": "bugfix",
+        "count": 54
+      },
+      {
+        "label": "kernel",
+        "count": 41
+      },
+      {
+        "label": "area-infrastructure",
+        "count": 40
+      },
+      {
+        "label": "Top 100",
+        "count": 40
+      },
+      {
+        "label": "Quality Scale: platinum",
+        "count": 39
+      }
+    ],
+    "per_repo_top": {
+      "dotnet/aspnetcore": [
+        {
+          "label": "area-blazor",
+          "count": 67
+        },
+        {
+          "label": "community-contribution",
+          "count": 54
+        },
+        {
+          "label": "area-infrastructure",
+          "count": 40
+        },
+        {
+          "label": "pending-ci-rerun",
+          "count": 15
+        },
+        {
+          "label": "area-networking",
+          "count": 13
+        },
+        {
+          "label": "tell-mode",
+          "count": 11
+        },
+        {
+          "label": "needs-area-label",
+          "count": 10
+        },
+        {
+          "label": "area-minimal",
+          "count": 10
+        }
+      ],
+      "dotnet/runtime": [
+        {
+          "label": "area-CodeGen-coreclr",
+          "count": 32
+        },
+        {
+          "label": "community-contribution",
+          "count": 27
+        },
+        {
+          "label": "Servicing-approved",
+          "count": 27
+        },
+        {
+          "label": "arch-wasm",
+          "count": 22
+        },
+        {
+          "label": "area-Infrastructure",
+          "count": 22
+        },
+        {
+          "label": "area-VM-coreclr",
+          "count": 21
+        },
+        {
+          "label": "area-codeflow",
+          "count": 17
+        },
+        {
+          "label": "area-NativeAOT-coreclr",
+          "count": 11
+        }
+      ],
+      "home-assistant/core": [
+        {
+          "label": "cla-signed",
+          "count": 261
+        },
+        {
+          "label": "small-pr",
+          "count": 169
+        },
+        {
+          "label": "has-tests",
+          "count": 129
+        },
+        {
+          "label": "by-code-owner",
+          "count": 107
+        },
+        {
+          "label": "code-quality",
+          "count": 88
+        },
+        {
+          "label": "Quality Scale: No score",
+          "count": 87
+        },
+        {
+          "label": "Top 200",
+          "count": 66
+        },
+        {
+          "label": "new-feature",
+          "count": 63
+        }
+      ],
+      "microsoft/semantic-kernel": [
+        {
+          "label": ".NET",
+          "count": 131
+        },
+        {
+          "label": "python",
+          "count": 120
+        },
+        {
+          "label": "dependencies",
+          "count": 59
+        },
+        {
+          "label": "kernel",
+          "count": 41
+        },
+        {
+          "label": "python:uv",
+          "count": 26
+        },
+        {
+          "label": "documentation",
+          "count": 22
+        },
+        {
+          "label": "kernel.core",
+          "count": 18
+        },
+        {
+          "label": "javascript",
+          "count": 14
+        }
+      ],
+      "microsoft/vscode": [
+        {
+          "label": "dependencies",
+          "count": 12
+        },
+        {
+          "label": "javascript",
+          "count": 10
+        },
+        {
+          "label": "cherry-pick-artifact",
+          "count": 5
+        },
+        {
+          "label": "errors-fix",
+          "count": 4
+        },
+        {
+          "label": "*error-fix-driving",
+          "count": 4
+        },
+        {
+          "label": "release-cherry-pick",
+          "count": 3
+        },
+        {
+          "label": "snippets",
+          "count": 2
+        },
+        {
+          "label": "github_actions",
+          "count": 2
+        }
+      ]
+    },
+    "total_labeled_prs": 1071,
+    "total_prs": 1494
+  },
+  "ai_vs_human": {
+    "pooled": {
+      "ai_authored": 380,
+      "human_authored": 1114,
+      "total": 1494,
+      "ai_share": 0.2544
+    },
+    "per_repo": {
+      "dotnet/aspnetcore": {
+        "ai_authored": 112,
+        "human_authored": 187,
+        "total": 299,
+        "ai_share": 0.3746
+      },
+      "dotnet/runtime": {
+        "ai_authored": 110,
+        "human_authored": 189,
+        "total": 299,
+        "ai_share": 0.3679
+      },
+      "home-assistant/core": {
+        "ai_authored": 31,
+        "human_authored": 269,
+        "total": 300,
+        "ai_share": 0.1033
+      },
+      "microsoft/semantic-kernel": {
+        "ai_authored": 23,
+        "human_authored": 274,
+        "total": 297,
+        "ai_share": 0.0774
+      },
+      "microsoft/vscode": {
+        "ai_authored": 104,
+        "human_authored": 195,
+        "total": 299,
+        "ai_share": 0.3478
+      }
+    }
+  },
+  "ai_reviewer_presence": {
+    "pooled": {
+      "ai_reviewed": 1064,
+      "not_ai_reviewed": 430,
+      "total": 1494,
+      "share": 0.7122
+    },
+    "per_repo": {
+      "dotnet/aspnetcore": {
+        "ai_reviewed": 193,
+        "not_ai_reviewed": 106,
+        "total": 299,
+        "share": 0.6455
+      },
+      "dotnet/runtime": {
+        "ai_reviewed": 241,
+        "not_ai_reviewed": 58,
+        "total": 299,
+        "share": 0.806
+      },
+      "home-assistant/core": {
+        "ai_reviewed": 246,
+        "not_ai_reviewed": 54,
+        "total": 300,
+        "share": 0.82
+      },
+      "microsoft/semantic-kernel": {
+        "ai_reviewed": 127,
+        "not_ai_reviewed": 170,
+        "total": 297,
+        "share": 0.4276
+      },
+      "microsoft/vscode": {
+        "ai_reviewed": 257,
+        "not_ai_reviewed": 42,
+        "total": 299,
+        "share": 0.8595
+      }
+    }
+  },
+  "merge_rate_by_authorship": {
+    "pooled": {
+      "ai_authored": {
+        "n": 380,
+        "merge_rate": 0.6526
+      },
+      "human_authored": {
+        "n": 1114,
+        "merge_rate": 0.7424
+      }
+    },
+    "per_repo": {
+      "dotnet/aspnetcore": {
+        "ai_authored": {
+          "n": 112,
+          "merge_rate": 0.6875
+        },
+        "human_authored": {
+          "n": 187,
+          "merge_rate": 0.6631
+        }
+      },
+      "dotnet/runtime": {
+        "ai_authored": {
+          "n": 110,
+          "merge_rate": 0.7909
+        },
+        "human_authored": {
+          "n": 189,
+          "merge_rate": 0.836
+        }
+      },
+      "home-assistant/core": {
+        "ai_authored": {
+          "n": 31,
+          "merge_rate": 0.3548
+        },
+        "human_authored": {
+          "n": 269,
+          "merge_rate": 0.7732
+        }
+      },
+      "microsoft/semantic-kernel": {
+        "ai_authored": {
+          "n": 23,
+          "merge_rate": 0.6957
+        },
+        "human_authored": {
+          "n": 274,
+          "merge_rate": 0.6241
+        }
+      },
+      "microsoft/vscode": {
+        "ai_authored": {
+          "n": 104,
+          "merge_rate": 0.5481
+        },
+        "human_authored": {
+          "n": 195,
+          "merge_rate": 0.8513
+        }
+      }
+    }
+  }
+}

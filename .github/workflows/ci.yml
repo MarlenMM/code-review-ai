@@ -1,0 +1,66 @@
+name: CI
+
+# Two independent jobs, matching the two runtimes in this repo (Python
+# backend/experiments, TypeScript VS Code extension). Neither job needs a
+# GITHUB_TOKEN/GROQ_API_KEY secret: the mined dataset and trained models are
+# committed (data/processed/*.parquet, results/models/*.joblib), and every
+# LLM-provider test mocks its HTTP session rather than calling a real API
+# (see tests/test_llm_providers_groq.py and friends) -- so `pytest` is fully
+# offline and deterministic here.
+#
+# Deliberately NOT run here: vscode-extension's `test:integration`. It
+# downloads a ~300MB real VS Code build and needs a live backend + a real
+# git repo with uncommitted changes to exercise (see
+# reports/vscode_extension_design.md Section 4.2/7.2) -- appropriate for a
+# developer running it locally, too heavy and too likely to flake on a
+# shared CI runner for "tests on every push." `npm test` (the fast,
+# network-free unit suite) plus `npm run compile` (the closest thing this
+# TypeScript project has to a lint step, since it has no ESLint config)
+# still cover every line of logic that doesn't require a real `vscode` API.
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: "pip"
+
+      - run: pip install -r requirements.txt
+
+      # Deliberately narrow scope -- see ruff.toml for why (F + E9 only,
+      # not the full default rule set).
+      - name: Lint (ruff)
+        run: ruff check .
+
+      - name: Test (pytest)
+        run: pytest tests/ -q
+
+  extension:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: vscode-extension
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: vscode-extension/package-lock.json
+
+      - run: npm ci
+
+      - name: Typecheck (tsc)
+        run: npm run compile
+
+      - name: Test (unit, network-free)
+        run: npm test

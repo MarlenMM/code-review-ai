@@ -1,0 +1,37 @@
+# Secrets
+.env
+
+# Data (cached/raw and large generated artifacts)
+data/raw_cache/
+data/llm_cache/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# Node / VSCode extension
+node_modules/
+out/
+*.vsix
+.vscode-test/
+
+# LaTeX build artifacts (keep the .tex source and the compiled .pdf)
+reports/*.aux
+reports/*.log
+reports/*.out
+reports/*.toc
+
+# OS
+.DS_Store
+
+# Editor (repo-root editor config only -- vscode-extension/.vscode/ is the
+# extension project's own tracked launch/build config and must NOT match here)
+/.vscode/
+.idea/

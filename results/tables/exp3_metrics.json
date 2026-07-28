@@ -1,0 +1,787 @@
+{
+  "sample": {
+    "n_prs_covered": 16,
+    "n_prs_complete": 16,
+    "complete_merged": 14,
+    "complete_not_merged": 2,
+    "n_rows": 512,
+    "n_failures": 0
+  },
+  "caveats": [
+    "Merge sample is skewed 14:2 (merged:not-merged); absolute merge metrics are dominated by the majority class -- read the cross-config comparison, not the raw accuracy.",
+    "Only 5 PR(s) carry human review comments, so BLEU/ROUGE is over a small ground-truth set.",
+    "Contexts were capped at 2,500 chars for the free-tier token budget (see reports/exp3_grid_run_status.md), smaller than Experiment 2's."
+  ],
+  "merge_prediction": {
+    "per_cell": {
+      "diff_commit_message|cot": {
+        "n": 16,
+        "n_merged": 14,
+        "n_not_merged": 2,
+        "accuracy": 0.875,
+        "merged": {
+          "precision": 0.875,
+          "recall": 1.0,
+          "f1": 0.9333
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.4667,
+        "confusion": {
+          "tp": 14,
+          "fp": 2,
+          "tn": 0,
+          "fn": 0
+        }
+      },
+      "diff_commit_message|few_shot": {
+        "n": 16,
+        "n_merged": 14,
+        "n_not_merged": 2,
+        "accuracy": 0.9375,
+        "merged": {
+          "precision": 0.9333,
+          "recall": 1.0,
+          "f1": 0.9655
+        },
+        "not_merged": {
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6667
+        },
+        "macro_f1": 0.8161,
+        "confusion": {
+          "tp": 14,
+          "fp": 1,
+          "tn": 1,
+          "fn": 0
+        }
+      },
+      "diff_commit_message|role_based": {
+        "n": 16,
+        "n_merged": 14,
+        "n_not_merged": 2,
+        "accuracy": 0.875,
+        "merged": {
+          "precision": 0.875,
+          "recall": 1.0,
+          "f1": 0.9333
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.4667,
+        "confusion": {
+          "tp": 14,
+          "fp": 2,
+          "tn": 0,
+          "fn": 0
+        }
+      },
+      "diff_commit_message|zero_shot": {
+        "n": 16,
+        "n_merged": 14,
+        "n_not_merged": 2,
+        "accuracy": 0.875,
+        "merged": {
+          "precision": 0.875,
+          "recall": 1.0,
+          "f1": 0.9333
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.4667,
+        "confusion": {
+          "tp": 14,
+          "fp": 2,
+          "tn": 0,
+          "fn": 0
+        }
+      },
+      "diff_description|cot": {
+        "n": 16,
+        "n_merged": 14,
+        "n_not_merged": 2,
+        "accuracy": 0.875,
+        "merged": {
+          "precision": 0.875,
+          "recall": 1.0,
+          "f1": 0.9333
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.4667,
+        "confusion": {
+          "tp": 14,
+          "fp": 2,
+          "tn": 0,
+          "fn": 0
+        }
+      },
+      "diff_description|few_shot": {
+        "n": 16,
+        "n_merged": 14,
+        "n_not_merged": 2,
+        "accuracy": 0.75,
+        "merged": {
+          "precision": 0.8571,
+          "recall": 0.8571,
+          "f1": 0.8571
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.4286,
+        "confusion": {
+          "tp": 12,
+          "fp": 2,
+          "tn": 0,
+          "fn": 2
+        }
+      },
+      "diff_description|role_based": {
+        "n": 16,
+        "n_merged": 14,
+        "n_not_merged": 2,
+        "accuracy": 0.875,
+        "merged": {
+          "precision": 0.875,
+          "recall": 1.0,
+          "f1": 0.9333
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.4667,
+        "confusion": {
+          "tp": 14,
+          "fp": 2,
+          "tn": 0,
+          "fn": 0
+        }
+      },
+      "diff_description|zero_shot": {
+        "n": 16,
+        "n_merged": 14,
+        "n_not_merged": 2,
+        "accuracy": 0.875,
+        "merged": {
+          "precision": 0.875,
+          "recall": 1.0,
+          "f1": 0.9333
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.4667,
+        "confusion": {
+          "tp": 14,
+          "fp": 2,
+          "tn": 0,
+          "fn": 0
+        }
+      },
+      "diff_metadata|cot": {
+        "n": 16,
+        "n_merged": 14,
+        "n_not_merged": 2,
+        "accuracy": 0.875,
+        "merged": {
+          "precision": 0.875,
+          "recall": 1.0,
+          "f1": 0.9333
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.4667,
+        "confusion": {
+          "tp": 14,
+          "fp": 2,
+          "tn": 0,
+          "fn": 0
+        }
+      },
+      "diff_metadata|few_shot": {
+        "n": 16,
+        "n_merged": 14,
+        "n_not_merged": 2,
+        "accuracy": 0.5625,
+        "merged": {
+          "precision": 0.8182,
+          "recall": 0.6429,
+          "f1": 0.72
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.36,
+        "confusion": {
+          "tp": 9,
+          "fp": 2,
+          "tn": 0,
+          "fn": 5
+        }
+      },
+      "diff_metadata|role_based": {
+        "n": 16,
+        "n_merged": 14,
+        "n_not_merged": 2,
+        "accuracy": 0.9375,
+        "merged": {
+          "precision": 0.9333,
+          "recall": 1.0,
+          "f1": 0.9655
+        },
+        "not_merged": {
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6667
+        },
+        "macro_f1": 0.8161,
+        "confusion": {
+          "tp": 14,
+          "fp": 1,
+          "tn": 1,
+          "fn": 0
+        }
+      },
+      "diff_metadata|zero_shot": {
+        "n": 16,
+        "n_merged": 14,
+        "n_not_merged": 2,
+        "accuracy": 0.875,
+        "merged": {
+          "precision": 0.875,
+          "recall": 1.0,
+          "f1": 0.9333
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.4667,
+        "confusion": {
+          "tp": 14,
+          "fp": 2,
+          "tn": 0,
+          "fn": 0
+        }
+      },
+      "diff_only|cot": {
+        "n": 16,
+        "n_merged": 14,
+        "n_not_merged": 2,
+        "accuracy": 0.875,
+        "merged": {
+          "precision": 0.875,
+          "recall": 1.0,
+          "f1": 0.9333
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.4667,
+        "confusion": {
+          "tp": 14,
+          "fp": 2,
+          "tn": 0,
+          "fn": 0
+        }
+      },
+      "diff_only|few_shot": {
+        "n": 16,
+        "n_merged": 14,
+        "n_not_merged": 2,
+        "accuracy": 0.75,
+        "merged": {
+          "precision": 0.9167,
+          "recall": 0.7857,
+          "f1": 0.8462
+        },
+        "not_merged": {
+          "precision": 0.25,
+          "recall": 0.5,
+          "f1": 0.3333
+        },
+        "macro_f1": 0.5897,
+        "confusion": {
+          "tp": 11,
+          "fp": 1,
+          "tn": 1,
+          "fn": 3
+        }
+      },
+      "diff_only|role_based": {
+        "n": 16,
+        "n_merged": 14,
+        "n_not_merged": 2,
+        "accuracy": 0.875,
+        "merged": {
+          "precision": 0.875,
+          "recall": 1.0,
+          "f1": 0.9333
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.4667,
+        "confusion": {
+          "tp": 14,
+          "fp": 2,
+          "tn": 0,
+          "fn": 0
+        }
+      },
+      "diff_only|zero_shot": {
+        "n": 16,
+        "n_merged": 14,
+        "n_not_merged": 2,
+        "accuracy": 0.875,
+        "merged": {
+          "precision": 0.875,
+          "recall": 1.0,
+          "f1": 0.9333
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.4667,
+        "confusion": {
+          "tp": 14,
+          "fp": 2,
+          "tn": 0,
+          "fn": 0
+        }
+      }
+    },
+    "pooled_over_all_cells": {
+      "n": 256,
+      "n_merged": 224,
+      "n_not_merged": 32,
+      "accuracy": 0.8477,
+      "merged": {
+        "precision": 0.8807,
+        "recall": 0.9554,
+        "f1": 0.9165
+      },
+      "not_merged": {
+        "precision": 0.2308,
+        "recall": 0.0938,
+        "f1": 0.1333
+      },
+      "macro_f1": 0.5249,
+      "confusion": {
+        "tp": 214,
+        "fp": 29,
+        "tn": 3,
+        "fn": 10
+      }
+    },
+    "abstentions": 0,
+    "note": "pooled_over_all_cells reuses the same PRs across 16 configs, so its n is 16x the PR count and its rows are NOT independent; use per_cell for model-vs-model and the config comparison."
+  },
+  "review_generation": {
+    "per_cell": {
+      "diff_commit_message|cot": {
+        "n": 5,
+        "bleu": 0.85,
+        "rouge1": 0.1338,
+        "rouge2": 0.0208,
+        "rougeL": 0.0874
+      },
+      "diff_commit_message|few_shot": {
+        "n": 5,
+        "bleu": 0.957,
+        "rouge1": 0.2001,
+        "rouge2": 0.0354,
+        "rougeL": 0.126
+      },
+      "diff_commit_message|role_based": {
+        "n": 5,
+        "bleu": 1.318,
+        "rouge1": 0.1661,
+        "rouge2": 0.0311,
+        "rougeL": 0.086
+      },
+      "diff_commit_message|zero_shot": {
+        "n": 5,
+        "bleu": 0.392,
+        "rouge1": 0.0781,
+        "rouge2": 0.0061,
+        "rougeL": 0.0537
+      },
+      "diff_description|cot": {
+        "n": 5,
+        "bleu": 0.809,
+        "rouge1": 0.1585,
+        "rouge2": 0.0124,
+        "rougeL": 0.0915
+      },
+      "diff_description|few_shot": {
+        "n": 5,
+        "bleu": 2.006,
+        "rouge1": 0.1755,
+        "rouge2": 0.0222,
+        "rougeL": 0.1137
+      },
+      "diff_description|role_based": {
+        "n": 5,
+        "bleu": 1.002,
+        "rouge1": 0.1203,
+        "rouge2": 0.0127,
+        "rougeL": 0.0776
+      },
+      "diff_description|zero_shot": {
+        "n": 5,
+        "bleu": 0.426,
+        "rouge1": 0.1141,
+        "rouge2": 0.0171,
+        "rougeL": 0.0866
+      },
+      "diff_metadata|cot": {
+        "n": 5,
+        "bleu": 0.465,
+        "rouge1": 0.1363,
+        "rouge2": 0.0099,
+        "rougeL": 0.0911
+      },
+      "diff_metadata|few_shot": {
+        "n": 5,
+        "bleu": 1.249,
+        "rouge1": 0.1629,
+        "rouge2": 0.0187,
+        "rougeL": 0.0956
+      },
+      "diff_metadata|role_based": {
+        "n": 5,
+        "bleu": 0.468,
+        "rouge1": 0.1039,
+        "rouge2": 0.0064,
+        "rougeL": 0.061
+      },
+      "diff_metadata|zero_shot": {
+        "n": 5,
+        "bleu": 0.415,
+        "rouge1": 0.1147,
+        "rouge2": 0.0081,
+        "rougeL": 0.0637
+      },
+      "diff_only|cot": {
+        "n": 5,
+        "bleu": 1.045,
+        "rouge1": 0.1686,
+        "rouge2": 0.0172,
+        "rougeL": 0.11
+      },
+      "diff_only|few_shot": {
+        "n": 5,
+        "bleu": 0.405,
+        "rouge1": 0.1231,
+        "rouge2": 0.0095,
+        "rougeL": 0.0916
+      },
+      "diff_only|role_based": {
+        "n": 5,
+        "bleu": 0.365,
+        "rouge1": 0.0824,
+        "rouge2": 0.0078,
+        "rougeL": 0.0452
+      },
+      "diff_only|zero_shot": {
+        "n": 5,
+        "bleu": 0.35,
+        "rouge1": 0.0968,
+        "rouge2": 0.0115,
+        "rougeL": 0.0689
+      }
+    },
+    "n_prs_with_ground_truth": 5
+  },
+  "inference_time": {
+    "merge_prediction|diff_commit_message|cot": {
+      "n": 16,
+      "mean_ms": 580.9,
+      "median_ms": 564.6
+    },
+    "merge_prediction|diff_commit_message|few_shot": {
+      "n": 16,
+      "mean_ms": 439.8,
+      "median_ms": 451.6
+    },
+    "merge_prediction|diff_commit_message|role_based": {
+      "n": 16,
+      "mean_ms": 413.3,
+      "median_ms": 430.2
+    },
+    "merge_prediction|diff_commit_message|zero_shot": {
+      "n": 16,
+      "mean_ms": 62.9,
+      "median_ms": 59.6
+    },
+    "merge_prediction|diff_description|cot": {
+      "n": 16,
+      "mean_ms": 530.0,
+      "median_ms": 552.1
+    },
+    "merge_prediction|diff_description|few_shot": {
+      "n": 16,
+      "mean_ms": 458.6,
+      "median_ms": 456.0
+    },
+    "merge_prediction|diff_description|role_based": {
+      "n": 16,
+      "mean_ms": 353.7,
+      "median_ms": 375.3
+    },
+    "merge_prediction|diff_description|zero_shot": {
+      "n": 16,
+      "mean_ms": 64.2,
+      "median_ms": 62.0
+    },
+    "merge_prediction|diff_metadata|cot": {
+      "n": 16,
+      "mean_ms": 594.3,
+      "median_ms": 585.2
+    },
+    "merge_prediction|diff_metadata|few_shot": {
+      "n": 16,
+      "mean_ms": 497.3,
+      "median_ms": 458.5
+    },
+    "merge_prediction|diff_metadata|role_based": {
+      "n": 16,
+      "mean_ms": 518.6,
+      "median_ms": 387.2
+    },
+    "merge_prediction|diff_metadata|zero_shot": {
+      "n": 16,
+      "mean_ms": 57.9,
+      "median_ms": 54.7
+    },
+    "merge_prediction|diff_only|cot": {
+      "n": 16,
+      "mean_ms": 559.3,
+      "median_ms": 560.1
+    },
+    "merge_prediction|diff_only|few_shot": {
+      "n": 16,
+      "mean_ms": 436.0,
+      "median_ms": 437.6
+    },
+    "merge_prediction|diff_only|role_based": {
+      "n": 16,
+      "mean_ms": 312.7,
+      "median_ms": 327.7
+    },
+    "merge_prediction|diff_only|zero_shot": {
+      "n": 16,
+      "mean_ms": 53.3,
+      "median_ms": 53.7
+    },
+    "review_comment|diff_commit_message|cot": {
+      "n": 16,
+      "mean_ms": 1018.6,
+      "median_ms": 957.1
+    },
+    "review_comment|diff_commit_message|few_shot": {
+      "n": 16,
+      "mean_ms": 556.5,
+      "median_ms": 432.5
+    },
+    "review_comment|diff_commit_message|role_based": {
+      "n": 16,
+      "mean_ms": 1155.7,
+      "median_ms": 574.3
+    },
+    "review_comment|diff_commit_message|zero_shot": {
+      "n": 16,
+      "mean_ms": 1153.0,
+      "median_ms": 876.5
+    },
+    "review_comment|diff_description|cot": {
+      "n": 16,
+      "mean_ms": 912.1,
+      "median_ms": 775.6
+    },
+    "review_comment|diff_description|few_shot": {
+      "n": 16,
+      "mean_ms": 499.7,
+      "median_ms": 515.6
+    },
+    "review_comment|diff_description|role_based": {
+      "n": 16,
+      "mean_ms": 976.4,
+      "median_ms": 636.2
+    },
+    "review_comment|diff_description|zero_shot": {
+      "n": 16,
+      "mean_ms": 892.0,
+      "median_ms": 605.6
+    },
+    "review_comment|diff_metadata|cot": {
+      "n": 16,
+      "mean_ms": 953.0,
+      "median_ms": 977.1
+    },
+    "review_comment|diff_metadata|few_shot": {
+      "n": 16,
+      "mean_ms": 528.7,
+      "median_ms": 544.5
+    },
+    "review_comment|diff_metadata|role_based": {
+      "n": 16,
+      "mean_ms": 1057.4,
+      "median_ms": 667.1
+    },
+    "review_comment|diff_metadata|zero_shot": {
+      "n": 16,
+      "mean_ms": 689.8,
+      "median_ms": 597.7
+    },
+    "review_comment|diff_only|cot": {
+      "n": 16,
+      "mean_ms": 1029.4,
+      "median_ms": 1038.3
+    },
+    "review_comment|diff_only|few_shot": {
+      "n": 16,
+      "mean_ms": 890.4,
+      "median_ms": 454.7
+    },
+    "review_comment|diff_only|role_based": {
+      "n": 16,
+      "mean_ms": 1164.0,
+      "median_ms": 656.1
+    },
+    "review_comment|diff_only|zero_shot": {
+      "n": 16,
+      "mean_ms": 841.7,
+      "median_ms": 651.0
+    }
+  },
+  "exp2_comparison_same_subset": {
+    "n_prs": 16,
+    "on_pr_ids": "same as Experiment 3 sample",
+    "rf_v1_balanced": {
+      "n": 16,
+      "n_merged": 14,
+      "n_not_merged": 2,
+      "accuracy": 0.75,
+      "merged": {
+        "precision": 0.9167,
+        "recall": 0.7857,
+        "f1": 0.8462
+      },
+      "not_merged": {
+        "precision": 0.25,
+        "recall": 0.5,
+        "f1": 0.3333
+      },
+      "macro_f1": 0.5897,
+      "confusion": {
+        "tp": 11,
+        "fp": 1,
+        "tn": 1,
+        "fn": 3
+      }
+    },
+    "rf_v1_plain": {
+      "n": 16,
+      "n_merged": 14,
+      "n_not_merged": 2,
+      "accuracy": 0.9375,
+      "merged": {
+        "precision": 0.9333,
+        "recall": 1.0,
+        "f1": 0.9655
+      },
+      "not_merged": {
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6667
+      },
+      "macro_f1": 0.8161,
+      "confusion": {
+        "tp": 14,
+        "fp": 1,
+        "tn": 1,
+        "fn": 0
+      }
+    },
+    "svm_v1_balanced": {
+      "n": 16,
+      "n_merged": 14,
+      "n_not_merged": 2,
+      "accuracy": 0.875,
+      "merged": {
+        "precision": 0.875,
+        "recall": 1.0,
+        "f1": 0.9333
+      },
+      "not_merged": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "macro_f1": 0.4667,
+      "confusion": {
+        "tp": 14,
+        "fp": 2,
+        "tn": 0,
+        "fn": 0
+      }
+    },
+    "svm_v1_plain": {
+      "n": 16,
+      "n_merged": 14,
+      "n_not_merged": 2,
+      "accuracy": 0.9375,
+      "merged": {
+        "precision": 0.9333,
+        "recall": 1.0,
+        "f1": 0.9655
+      },
+      "not_merged": {
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6667
+      },
+      "macro_f1": 0.8161,
+      "confusion": {
+        "tp": 14,
+        "fp": 1,
+        "tn": 1,
+        "fn": 0
+      }
+    }
+  }
+}

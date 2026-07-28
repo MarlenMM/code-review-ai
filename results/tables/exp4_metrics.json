@@ -1,0 +1,1294 @@
+{
+  "sample": {
+    "n_prs_covered": 4,
+    "n_prs_complete": 3,
+    "complete_merged": 2,
+    "complete_not_merged": 1,
+    "n_rows": 148,
+    "n_failures": 0
+  },
+  "caveats": [
+    "Only 3 PR(s) are fully complete (2 merged / 1 not-merged); the free-tier daily token cap stopped the run (reports/exp4_grid_run_status.md). At this n, per-cell merge accuracy is coarse and every number here is DIRECTIONAL -- read the paired cross-tier/cross-strategy comparison, not absolute values.",
+    "No complete PR carries a substantive human review comment, so BLEU/ROUGE is not computable on this sample; review quality is shown via generated-comment characteristics + qualitative turn examples.",
+    "The DIFF_ISSUE / COMPLETE tiers were run without --fetch-issues, so their issue slot is empty (reports/exp4_grid_run_status.md); the issue tier's true effect awaits a top-up run.",
+    "Context sections were capped tightly for the free-tier token budget (run_exp4_grid.py GROQ_RUN_* constants)."
+  ],
+  "merge_prediction": {
+    "per_cell": {
+      "complete_se_context|cot": {
+        "n": 3,
+        "n_merged": 2,
+        "n_not_merged": 1,
+        "accuracy": 0.6667,
+        "merged": {
+          "precision": 0.6667,
+          "recall": 1.0,
+          "f1": 0.8
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.4,
+        "confusion": {
+          "tp": 2,
+          "fp": 1,
+          "tn": 0,
+          "fn": 0
+        }
+      },
+      "complete_se_context|few_shot": {
+        "n": 3,
+        "n_merged": 2,
+        "n_not_merged": 1,
+        "accuracy": 0.6667,
+        "merged": {
+          "precision": 0.6667,
+          "recall": 1.0,
+          "f1": 0.8
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.4,
+        "confusion": {
+          "tp": 2,
+          "fp": 1,
+          "tn": 0,
+          "fn": 0
+        }
+      },
+      "complete_se_context|multi_turn": {
+        "n": 3,
+        "n_merged": 2,
+        "n_not_merged": 1,
+        "accuracy": 0.6667,
+        "merged": {
+          "precision": 0.6667,
+          "recall": 1.0,
+          "f1": 0.8
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.4,
+        "confusion": {
+          "tp": 2,
+          "fp": 1,
+          "tn": 0,
+          "fn": 0
+        }
+      },
+      "complete_se_context|role_based": {
+        "n": 3,
+        "n_merged": 2,
+        "n_not_merged": 1,
+        "accuracy": 0.6667,
+        "merged": {
+          "precision": 0.6667,
+          "recall": 1.0,
+          "f1": 0.8
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.4,
+        "confusion": {
+          "tp": 2,
+          "fp": 1,
+          "tn": 0,
+          "fn": 0
+        }
+      },
+      "complete_se_context|self_reflection": {
+        "n": 3,
+        "n_merged": 2,
+        "n_not_merged": 1,
+        "accuracy": 0.3333,
+        "merged": {
+          "precision": 0.5,
+          "recall": 0.5,
+          "f1": 0.5
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.25,
+        "confusion": {
+          "tp": 1,
+          "fp": 1,
+          "tn": 0,
+          "fn": 1
+        }
+      },
+      "diff|cot": {
+        "n": 4,
+        "n_merged": 3,
+        "n_not_merged": 1,
+        "accuracy": 0.75,
+        "merged": {
+          "precision": 0.75,
+          "recall": 1.0,
+          "f1": 0.8571
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.4286,
+        "confusion": {
+          "tp": 3,
+          "fp": 1,
+          "tn": 0,
+          "fn": 0
+        }
+      },
+      "diff|few_shot": {
+        "n": 4,
+        "n_merged": 3,
+        "n_not_merged": 1,
+        "accuracy": 0.75,
+        "merged": {
+          "precision": 0.75,
+          "recall": 1.0,
+          "f1": 0.8571
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.4286,
+        "confusion": {
+          "tp": 3,
+          "fp": 1,
+          "tn": 0,
+          "fn": 0
+        }
+      },
+      "diff|role_based": {
+        "n": 4,
+        "n_merged": 3,
+        "n_not_merged": 1,
+        "accuracy": 0.75,
+        "merged": {
+          "precision": 0.75,
+          "recall": 1.0,
+          "f1": 0.8571
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.4286,
+        "confusion": {
+          "tp": 3,
+          "fp": 1,
+          "tn": 0,
+          "fn": 0
+        }
+      },
+      "diff|self_reflection": {
+        "n": 4,
+        "n_merged": 3,
+        "n_not_merged": 1,
+        "accuracy": 0.0,
+        "merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.0,
+        "confusion": {
+          "tp": 0,
+          "fp": 1,
+          "tn": 0,
+          "fn": 3
+        }
+      },
+      "diff_issue|cot": {
+        "n": 3,
+        "n_merged": 2,
+        "n_not_merged": 1,
+        "accuracy": 0.6667,
+        "merged": {
+          "precision": 0.6667,
+          "recall": 1.0,
+          "f1": 0.8
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.4,
+        "confusion": {
+          "tp": 2,
+          "fp": 1,
+          "tn": 0,
+          "fn": 0
+        }
+      },
+      "diff_issue|few_shot": {
+        "n": 3,
+        "n_merged": 2,
+        "n_not_merged": 1,
+        "accuracy": 0.0,
+        "merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.0,
+        "confusion": {
+          "tp": 0,
+          "fp": 1,
+          "tn": 0,
+          "fn": 2
+        }
+      },
+      "diff_issue|multi_turn": {
+        "n": 3,
+        "n_merged": 2,
+        "n_not_merged": 1,
+        "accuracy": 0.3333,
+        "merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "not_merged": {
+          "precision": 0.3333,
+          "recall": 1.0,
+          "f1": 0.5
+        },
+        "macro_f1": 0.25,
+        "confusion": {
+          "tp": 0,
+          "fp": 0,
+          "tn": 1,
+          "fn": 2
+        }
+      },
+      "diff_issue|role_based": {
+        "n": 3,
+        "n_merged": 2,
+        "n_not_merged": 1,
+        "accuracy": 0.6667,
+        "merged": {
+          "precision": 0.6667,
+          "recall": 1.0,
+          "f1": 0.8
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.4,
+        "confusion": {
+          "tp": 2,
+          "fp": 1,
+          "tn": 0,
+          "fn": 0
+        }
+      },
+      "diff_issue|self_reflection": {
+        "n": 3,
+        "n_merged": 2,
+        "n_not_merged": 1,
+        "accuracy": 0.6667,
+        "merged": {
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6667
+        },
+        "not_merged": {
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6667
+        },
+        "macro_f1": 0.6667,
+        "confusion": {
+          "tp": 1,
+          "fp": 0,
+          "tn": 1,
+          "fn": 1
+        }
+      },
+      "diff_pr_description|cot": {
+        "n": 3,
+        "n_merged": 2,
+        "n_not_merged": 1,
+        "accuracy": 0.6667,
+        "merged": {
+          "precision": 0.6667,
+          "recall": 1.0,
+          "f1": 0.8
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.4,
+        "confusion": {
+          "tp": 2,
+          "fp": 1,
+          "tn": 0,
+          "fn": 0
+        }
+      },
+      "diff_pr_description|few_shot": {
+        "n": 3,
+        "n_merged": 2,
+        "n_not_merged": 1,
+        "accuracy": 0.3333,
+        "merged": {
+          "precision": 0.5,
+          "recall": 0.5,
+          "f1": 0.5
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.25,
+        "confusion": {
+          "tp": 1,
+          "fp": 1,
+          "tn": 0,
+          "fn": 1
+        }
+      },
+      "diff_pr_description|multi_turn": {
+        "n": 3,
+        "n_merged": 2,
+        "n_not_merged": 1,
+        "accuracy": 0.6667,
+        "merged": {
+          "precision": 0.6667,
+          "recall": 1.0,
+          "f1": 0.8
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.4,
+        "confusion": {
+          "tp": 2,
+          "fp": 1,
+          "tn": 0,
+          "fn": 0
+        }
+      },
+      "diff_pr_description|role_based": {
+        "n": 3,
+        "n_merged": 2,
+        "n_not_merged": 1,
+        "accuracy": 0.6667,
+        "merged": {
+          "precision": 0.6667,
+          "recall": 1.0,
+          "f1": 0.8
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.4,
+        "confusion": {
+          "tp": 2,
+          "fp": 1,
+          "tn": 0,
+          "fn": 0
+        }
+      },
+      "diff_pr_description|self_reflection": {
+        "n": 3,
+        "n_merged": 2,
+        "n_not_merged": 1,
+        "accuracy": 0.6667,
+        "merged": {
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6667
+        },
+        "not_merged": {
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6667
+        },
+        "macro_f1": 0.6667,
+        "confusion": {
+          "tp": 1,
+          "fp": 0,
+          "tn": 1,
+          "fn": 1
+        }
+      },
+      "diff_repo_context|cot": {
+        "n": 3,
+        "n_merged": 2,
+        "n_not_merged": 1,
+        "accuracy": 0.6667,
+        "merged": {
+          "precision": 0.6667,
+          "recall": 1.0,
+          "f1": 0.8
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.4,
+        "confusion": {
+          "tp": 2,
+          "fp": 1,
+          "tn": 0,
+          "fn": 0
+        }
+      },
+      "diff_repo_context|few_shot": {
+        "n": 3,
+        "n_merged": 2,
+        "n_not_merged": 1,
+        "accuracy": 0.6667,
+        "merged": {
+          "precision": 0.6667,
+          "recall": 1.0,
+          "f1": 0.8
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.4,
+        "confusion": {
+          "tp": 2,
+          "fp": 1,
+          "tn": 0,
+          "fn": 0
+        }
+      },
+      "diff_repo_context|multi_turn": {
+        "n": 3,
+        "n_merged": 2,
+        "n_not_merged": 1,
+        "accuracy": 0.3333,
+        "merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "not_merged": {
+          "precision": 0.3333,
+          "recall": 1.0,
+          "f1": 0.5
+        },
+        "macro_f1": 0.25,
+        "confusion": {
+          "tp": 0,
+          "fp": 0,
+          "tn": 1,
+          "fn": 2
+        }
+      },
+      "diff_repo_context|role_based": {
+        "n": 3,
+        "n_merged": 2,
+        "n_not_merged": 1,
+        "accuracy": 0.6667,
+        "merged": {
+          "precision": 0.6667,
+          "recall": 1.0,
+          "f1": 0.8
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.4,
+        "confusion": {
+          "tp": 2,
+          "fp": 1,
+          "tn": 0,
+          "fn": 0
+        }
+      },
+      "diff_repo_context|self_reflection": {
+        "n": 3,
+        "n_merged": 2,
+        "n_not_merged": 1,
+        "accuracy": 0.3333,
+        "merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "not_merged": {
+          "precision": 0.3333,
+          "recall": 1.0,
+          "f1": 0.5
+        },
+        "macro_f1": 0.25,
+        "confusion": {
+          "tp": 0,
+          "fp": 0,
+          "tn": 1,
+          "fn": 2
+        }
+      }
+    },
+    "by_tier": {
+      "diff": {
+        "n": 16,
+        "n_merged": 12,
+        "n_not_merged": 4,
+        "accuracy": 0.5625,
+        "merged": {
+          "precision": 0.6923,
+          "recall": 0.75,
+          "f1": 0.72
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.36,
+        "confusion": {
+          "tp": 9,
+          "fp": 4,
+          "tn": 0,
+          "fn": 3
+        }
+      },
+      "diff_pr_description": {
+        "n": 15,
+        "n_merged": 10,
+        "n_not_merged": 5,
+        "accuracy": 0.6,
+        "merged": {
+          "precision": 0.6667,
+          "recall": 0.8,
+          "f1": 0.7273
+        },
+        "not_merged": {
+          "precision": 0.3333,
+          "recall": 0.2,
+          "f1": 0.25
+        },
+        "macro_f1": 0.4886,
+        "confusion": {
+          "tp": 8,
+          "fp": 4,
+          "tn": 1,
+          "fn": 2
+        }
+      },
+      "diff_repo_context": {
+        "n": 15,
+        "n_merged": 10,
+        "n_not_merged": 5,
+        "accuracy": 0.5333,
+        "merged": {
+          "precision": 0.6667,
+          "recall": 0.6,
+          "f1": 0.6316
+        },
+        "not_merged": {
+          "precision": 0.3333,
+          "recall": 0.4,
+          "f1": 0.3636
+        },
+        "macro_f1": 0.4976,
+        "confusion": {
+          "tp": 6,
+          "fp": 3,
+          "tn": 2,
+          "fn": 4
+        }
+      },
+      "diff_issue": {
+        "n": 15,
+        "n_merged": 10,
+        "n_not_merged": 5,
+        "accuracy": 0.4667,
+        "merged": {
+          "precision": 0.625,
+          "recall": 0.5,
+          "f1": 0.5556
+        },
+        "not_merged": {
+          "precision": 0.2857,
+          "recall": 0.4,
+          "f1": 0.3333
+        },
+        "macro_f1": 0.4444,
+        "confusion": {
+          "tp": 5,
+          "fp": 3,
+          "tn": 2,
+          "fn": 5
+        }
+      },
+      "complete_se_context": {
+        "n": 15,
+        "n_merged": 10,
+        "n_not_merged": 5,
+        "accuracy": 0.6,
+        "merged": {
+          "precision": 0.6429,
+          "recall": 0.9,
+          "f1": 0.75
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.375,
+        "confusion": {
+          "tp": 9,
+          "fp": 5,
+          "tn": 0,
+          "fn": 1
+        }
+      }
+    },
+    "by_strategy": {
+      "role_based": {
+        "n": 16,
+        "n_merged": 11,
+        "n_not_merged": 5,
+        "accuracy": 0.6875,
+        "merged": {
+          "precision": 0.6875,
+          "recall": 1.0,
+          "f1": 0.8148
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.4074,
+        "confusion": {
+          "tp": 11,
+          "fp": 5,
+          "tn": 0,
+          "fn": 0
+        }
+      },
+      "few_shot": {
+        "n": 16,
+        "n_merged": 11,
+        "n_not_merged": 5,
+        "accuracy": 0.5,
+        "merged": {
+          "precision": 0.6154,
+          "recall": 0.7273,
+          "f1": 0.6667
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.3333,
+        "confusion": {
+          "tp": 8,
+          "fp": 5,
+          "tn": 0,
+          "fn": 3
+        }
+      },
+      "cot": {
+        "n": 16,
+        "n_merged": 11,
+        "n_not_merged": 5,
+        "accuracy": 0.6875,
+        "merged": {
+          "precision": 0.6875,
+          "recall": 1.0,
+          "f1": 0.8148
+        },
+        "not_merged": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "macro_f1": 0.4074,
+        "confusion": {
+          "tp": 11,
+          "fp": 5,
+          "tn": 0,
+          "fn": 0
+        }
+      },
+      "self_reflection": {
+        "n": 16,
+        "n_merged": 11,
+        "n_not_merged": 5,
+        "accuracy": 0.375,
+        "merged": {
+          "precision": 0.6,
+          "recall": 0.2727,
+          "f1": 0.375
+        },
+        "not_merged": {
+          "precision": 0.2727,
+          "recall": 0.6,
+          "f1": 0.375
+        },
+        "macro_f1": 0.375,
+        "confusion": {
+          "tp": 3,
+          "fp": 2,
+          "tn": 3,
+          "fn": 8
+        }
+      },
+      "multi_turn": {
+        "n": 12,
+        "n_merged": 8,
+        "n_not_merged": 4,
+        "accuracy": 0.5,
+        "merged": {
+          "precision": 0.6667,
+          "recall": 0.5,
+          "f1": 0.5714
+        },
+        "not_merged": {
+          "precision": 0.3333,
+          "recall": 0.5,
+          "f1": 0.4
+        },
+        "macro_f1": 0.4857,
+        "confusion": {
+          "tp": 4,
+          "fp": 2,
+          "tn": 2,
+          "fn": 4
+        }
+      }
+    },
+    "pooled_over_all_cells": {
+      "n": 76,
+      "n_merged": 52,
+      "n_not_merged": 24,
+      "accuracy": 0.5526,
+      "merged": {
+        "precision": 0.6607,
+        "recall": 0.7115,
+        "f1": 0.6852
+      },
+      "not_merged": {
+        "precision": 0.25,
+        "recall": 0.2083,
+        "f1": 0.2273
+      },
+      "macro_f1": 0.4562,
+      "confusion": {
+        "tp": 37,
+        "fp": 19,
+        "tn": 5,
+        "fn": 15
+      }
+    },
+    "abstentions": 0,
+    "note": "by_tier/by_strategy pool the SAME few PRs across the other axis, so their rows are not independent; they answer 'does this axis shift predictions on the same PRs', which is the paired signal this experiment is after. per_cell n is tiny (see caveats)."
+  },
+  "review_generation": {
+    "per_cell": {},
+    "n_prs_with_ground_truth": 0,
+    "note": "No fully-scored PR in this sample carries a substantive human review comment -- a real property of merged agent-authored PRs (all 3 complete PRs have 0 human review comments). BLEU/ROUGE is therefore not computable here; see review_characteristics for the proxy signal and exp4_qualitative.md for turn-by-turn examples."
+  },
+  "review_characteristics": {
+    "by_tier": {
+      "diff": {
+        "n": 12,
+        "mean_n_comments": 5.83,
+        "mean_chars": 856
+      },
+      "diff_pr_description": {
+        "n": 15,
+        "mean_n_comments": 4,
+        "mean_chars": 623.3
+      },
+      "diff_repo_context": {
+        "n": 15,
+        "mean_n_comments": 5.2,
+        "mean_chars": 879.7
+      },
+      "diff_issue": {
+        "n": 15,
+        "mean_n_comments": 4.6,
+        "mean_chars": 670.9
+      },
+      "complete_se_context": {
+        "n": 15,
+        "mean_n_comments": 5.8,
+        "mean_chars": 875
+      }
+    },
+    "by_strategy": {
+      "role_based": {
+        "n": 15,
+        "mean_n_comments": 8.53,
+        "mean_chars": 1231.5
+      },
+      "few_shot": {
+        "n": 15,
+        "mean_n_comments": 3.8,
+        "mean_chars": 654.9
+      },
+      "cot": {
+        "n": 15,
+        "mean_n_comments": 3.07,
+        "mean_chars": 604.6
+      },
+      "self_reflection": {
+        "n": 15,
+        "mean_n_comments": 4.33,
+        "mean_chars": 679.9
+      },
+      "multi_turn": {
+        "n": 12,
+        "mean_n_comments": 5.67,
+        "mean_chars": 703.6
+      }
+    }
+  },
+  "inference_time": {
+    "merge_prediction|complete_se_context|cot": {
+      "n": 3,
+      "mean_ms": 449.7,
+      "median_ms": 438.1,
+      "mean_calls": 1
+    },
+    "merge_prediction|complete_se_context|few_shot": {
+      "n": 3,
+      "mean_ms": 376.0,
+      "median_ms": 474.0,
+      "mean_calls": 1
+    },
+    "merge_prediction|complete_se_context|multi_turn": {
+      "n": 3,
+      "mean_ms": 181.5,
+      "median_ms": 111.1,
+      "mean_calls": 2
+    },
+    "merge_prediction|complete_se_context|role_based": {
+      "n": 3,
+      "mean_ms": 328.3,
+      "median_ms": 387.1,
+      "mean_calls": 1
+    },
+    "merge_prediction|complete_se_context|self_reflection": {
+      "n": 3,
+      "mean_ms": 504.4,
+      "median_ms": 507.4,
+      "mean_calls": 2
+    },
+    "merge_prediction|diff|cot": {
+      "n": 4,
+      "mean_ms": 532.8,
+      "median_ms": 539.1,
+      "mean_calls": 1
+    },
+    "merge_prediction|diff|few_shot": {
+      "n": 4,
+      "mean_ms": 299.6,
+      "median_ms": 346.1,
+      "mean_calls": 1
+    },
+    "merge_prediction|diff|role_based": {
+      "n": 4,
+      "mean_ms": 181.4,
+      "median_ms": 174.8,
+      "mean_calls": 1
+    },
+    "merge_prediction|diff|self_reflection": {
+      "n": 4,
+      "mean_ms": 408.5,
+      "median_ms": 419.2,
+      "mean_calls": 2
+    },
+    "merge_prediction|diff_issue|cot": {
+      "n": 3,
+      "mean_ms": 481.0,
+      "median_ms": 489.3,
+      "mean_calls": 1
+    },
+    "merge_prediction|diff_issue|few_shot": {
+      "n": 3,
+      "mean_ms": 254.5,
+      "median_ms": 215.6,
+      "mean_calls": 1
+    },
+    "merge_prediction|diff_issue|multi_turn": {
+      "n": 3,
+      "mean_ms": 99.6,
+      "median_ms": 91.0,
+      "mean_calls": 2
+    },
+    "merge_prediction|diff_issue|role_based": {
+      "n": 3,
+      "mean_ms": 225.9,
+      "median_ms": 273.5,
+      "mean_calls": 1
+    },
+    "merge_prediction|diff_issue|self_reflection": {
+      "n": 3,
+      "mean_ms": 420.9,
+      "median_ms": 467.3,
+      "mean_calls": 2
+    },
+    "merge_prediction|diff_pr_description|cot": {
+      "n": 3,
+      "mean_ms": 521.9,
+      "median_ms": 455.1,
+      "mean_calls": 1
+    },
+    "merge_prediction|diff_pr_description|few_shot": {
+      "n": 3,
+      "mean_ms": 275.2,
+      "median_ms": 316.4,
+      "mean_calls": 1
+    },
+    "merge_prediction|diff_pr_description|multi_turn": {
+      "n": 3,
+      "mean_ms": 98.5,
+      "median_ms": 97.2,
+      "mean_calls": 2
+    },
+    "merge_prediction|diff_pr_description|role_based": {
+      "n": 3,
+      "mean_ms": 333.0,
+      "median_ms": 462.0,
+      "mean_calls": 1
+    },
+    "merge_prediction|diff_pr_description|self_reflection": {
+      "n": 3,
+      "mean_ms": 441.2,
+      "median_ms": 410.6,
+      "mean_calls": 2
+    },
+    "merge_prediction|diff_repo_context|cot": {
+      "n": 3,
+      "mean_ms": 542.2,
+      "median_ms": 575.3,
+      "mean_calls": 1
+    },
+    "merge_prediction|diff_repo_context|few_shot": {
+      "n": 3,
+      "mean_ms": 281.9,
+      "median_ms": 349.3,
+      "mean_calls": 1
+    },
+    "merge_prediction|diff_repo_context|multi_turn": {
+      "n": 3,
+      "mean_ms": 94.4,
+      "median_ms": 97.9,
+      "mean_calls": 2
+    },
+    "merge_prediction|diff_repo_context|role_based": {
+      "n": 3,
+      "mean_ms": 471.2,
+      "median_ms": 471.7,
+      "mean_calls": 1
+    },
+    "merge_prediction|diff_repo_context|self_reflection": {
+      "n": 3,
+      "mean_ms": 427.3,
+      "median_ms": 430.9,
+      "mean_calls": 2
+    },
+    "review_comment|complete_se_context|cot": {
+      "n": 3,
+      "mean_ms": 632.4,
+      "median_ms": 680.3,
+      "mean_calls": 1
+    },
+    "review_comment|complete_se_context|few_shot": {
+      "n": 3,
+      "mean_ms": 160.8,
+      "median_ms": 170.1,
+      "mean_calls": 1
+    },
+    "review_comment|complete_se_context|multi_turn": {
+      "n": 3,
+      "mean_ms": 1264.9,
+      "median_ms": 1274.7,
+      "mean_calls": 2
+    },
+    "review_comment|complete_se_context|role_based": {
+      "n": 3,
+      "mean_ms": 520.3,
+      "median_ms": 424.1,
+      "mean_calls": 1
+    },
+    "review_comment|complete_se_context|self_reflection": {
+      "n": 3,
+      "mean_ms": 1035.7,
+      "median_ms": 960.9,
+      "mean_calls": 2
+    },
+    "review_comment|diff|cot": {
+      "n": 3,
+      "mean_ms": 640.1,
+      "median_ms": 621.8,
+      "mean_calls": 1
+    },
+    "review_comment|diff|few_shot": {
+      "n": 3,
+      "mean_ms": 402.5,
+      "median_ms": 276.9,
+      "mean_calls": 1
+    },
+    "review_comment|diff|role_based": {
+      "n": 3,
+      "mean_ms": 467.8,
+      "median_ms": 534.0,
+      "mean_calls": 1
+    },
+    "review_comment|diff|self_reflection": {
+      "n": 3,
+      "mean_ms": 1081.3,
+      "median_ms": 1081.1,
+      "mean_calls": 2
+    },
+    "review_comment|diff_issue|cot": {
+      "n": 3,
+      "mean_ms": 766.3,
+      "median_ms": 837.0,
+      "mean_calls": 1
+    },
+    "review_comment|diff_issue|few_shot": {
+      "n": 3,
+      "mean_ms": 196.9,
+      "median_ms": 176.6,
+      "mean_calls": 1
+    },
+    "review_comment|diff_issue|multi_turn": {
+      "n": 3,
+      "mean_ms": 1180.2,
+      "median_ms": 1128.3,
+      "mean_calls": 2
+    },
+    "review_comment|diff_issue|role_based": {
+      "n": 3,
+      "mean_ms": 383.3,
+      "median_ms": 381.5,
+      "mean_calls": 1
+    },
+    "review_comment|diff_issue|self_reflection": {
+      "n": 3,
+      "mean_ms": 995.3,
+      "median_ms": 1022.5,
+      "mean_calls": 2
+    },
+    "review_comment|diff_pr_description|cot": {
+      "n": 3,
+      "mean_ms": 616.1,
+      "median_ms": 599.4,
+      "mean_calls": 1
+    },
+    "review_comment|diff_pr_description|few_shot": {
+      "n": 3,
+      "mean_ms": 337.5,
+      "median_ms": 369.5,
+      "mean_calls": 1
+    },
+    "review_comment|diff_pr_description|multi_turn": {
+      "n": 3,
+      "mean_ms": 1232.8,
+      "median_ms": 1085.8,
+      "mean_calls": 2
+    },
+    "review_comment|diff_pr_description|role_based": {
+      "n": 3,
+      "mean_ms": 352.3,
+      "median_ms": 252.2,
+      "mean_calls": 1
+    },
+    "review_comment|diff_pr_description|self_reflection": {
+      "n": 3,
+      "mean_ms": 1117.6,
+      "median_ms": 1122.9,
+      "mean_calls": 2
+    },
+    "review_comment|diff_repo_context|cot": {
+      "n": 3,
+      "mean_ms": 833.6,
+      "median_ms": 772.2,
+      "mean_calls": 1
+    },
+    "review_comment|diff_repo_context|few_shot": {
+      "n": 3,
+      "mean_ms": 318.7,
+      "median_ms": 174.3,
+      "mean_calls": 1
+    },
+    "review_comment|diff_repo_context|multi_turn": {
+      "n": 3,
+      "mean_ms": 1266.9,
+      "median_ms": 1283.9,
+      "mean_calls": 2
+    },
+    "review_comment|diff_repo_context|role_based": {
+      "n": 3,
+      "mean_ms": 644.9,
+      "median_ms": 621.4,
+      "mean_calls": 1
+    },
+    "review_comment|diff_repo_context|self_reflection": {
+      "n": 3,
+      "mean_ms": 985.3,
+      "median_ms": 1067.6,
+      "mean_calls": 2
+    }
+  },
+  "central_analysis": {
+    "context_effect_on_merge": {
+      "accuracy_by_tier": {
+        "diff": 0.5625,
+        "diff_pr_description": 0.6,
+        "diff_repo_context": 0.5333,
+        "diff_issue": 0.4667,
+        "complete_se_context": 0.6
+      },
+      "not_merged_recall_by_tier": {
+        "diff": 0.0,
+        "diff_pr_description": 0.2,
+        "diff_repo_context": 0.4,
+        "diff_issue": 0.4,
+        "complete_se_context": 0.0
+      }
+    },
+    "prompt_effect_on_merge": {
+      "accuracy_by_strategy": {
+        "role_based": 0.6875,
+        "few_shot": 0.5,
+        "cot": 0.6875,
+        "self_reflection": 0.375,
+        "multi_turn": 0.5
+      },
+      "not_merged_recall_by_strategy": {
+        "role_based": 0.0,
+        "few_shot": 0.0,
+        "cot": 0.0,
+        "self_reflection": 0.6,
+        "multi_turn": 0.5
+      },
+      "strategies_that_ever_catch_not_merged": [
+        "self_reflection",
+        "multi_turn"
+      ]
+    },
+    "review_verbosity": {
+      "mean_comments_by_tier": {
+        "diff": 5.83,
+        "diff_pr_description": 4,
+        "diff_repo_context": 5.2,
+        "diff_issue": 4.6,
+        "complete_se_context": 5.8
+      },
+      "mean_comments_by_strategy": {
+        "role_based": 8.53,
+        "few_shot": 3.8,
+        "cot": 3.07,
+        "self_reflection": 4.33,
+        "multi_turn": 5.67
+      }
+    }
+  },
+  "exp3_comparison": {
+    "shared_strategies": [
+      "role_based",
+      "few_shot",
+      "cot"
+    ],
+    "merge_by_strategy": {
+      "role_based": {
+        "exp3_human_code": {
+          "accuracy": 0.8906,
+          "not_merged_recall": 0.125,
+          "macro_f1": 0.5541
+        },
+        "exp4_ai_code": {
+          "accuracy": 0.6875,
+          "not_merged_recall": 0.0,
+          "macro_f1": 0.4074
+        },
+        "delta_accuracy": -0.2031
+      },
+      "few_shot": {
+        "exp3_human_code": {
+          "accuracy": 0.75,
+          "not_merged_recall": 0.25,
+          "macro_f1": 0.5486
+        },
+        "exp4_ai_code": {
+          "accuracy": 0.5,
+          "not_merged_recall": 0.0,
+          "macro_f1": 0.3333
+        },
+        "delta_accuracy": -0.25
+      },
+      "cot": {
+        "exp3_human_code": {
+          "accuracy": 0.875,
+          "not_merged_recall": 0.0,
+          "macro_f1": 0.4667
+        },
+        "exp4_ai_code": {
+          "accuracy": 0.6875,
+          "not_merged_recall": 0.0,
+          "macro_f1": 0.4074
+        },
+        "delta_accuracy": -0.1875
+      }
+    },
+    "exp3_sample": {
+      "n_prs_covered": 16,
+      "n_prs_complete": 16,
+      "complete_merged": 14,
+      "complete_not_merged": 2,
+      "n_rows": 512,
+      "n_failures": 0
+    },
+    "exp3_shared_strategy_mean_not_merged_recall": 0.125,
+    "note": "Exp 3 = LLM on human-written PRs (16 complete, 14:2 merged, base rate 0.875); Exp 4 = LLM on AI-authored PRs (3 complete, 2:1 merged, base rate 0.67). Populations, sample sizes, and context tiers all differ, so read these as directional, not a controlled comparison. Two things survive the small n: (1) raw accuracy is higher on human code, but in BOTH experiments the baseline strategies barely exceed their always-merge base rate, so the gap is mostly the different base rates, not discriminative power; (2) on human code the shared strategies DO reach the minority class occasionally (few-shot 0.25, role-based 0.125, CoT 0.0 averaged over contexts), whereas on AI-authored code those same three strategies score 0.0 not-merged recall everywhere and only Exp 4's NEW strategies (self-reflection 0.6, multi-turn 0.5) catch it at all -- consistent with guide 4.3's premise that AI-generated code is harder to judge from the diff alone. See central_analysis."
+  }
+}
