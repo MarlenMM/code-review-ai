@@ -1,5 +1,11 @@
 # Code Review AI
 
+[![CI](https://github.com/MarlenMM/code-review-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/MarlenMM/code-review-ai/actions/workflows/ci.yml)
+[![Dataset](https://img.shields.io/badge/dataset-1%2C494%20real%20PRs-1a7f37.svg)](data/processed)
+[![Merge prediction](https://img.shields.io/badge/merge%20prediction-76.8%25%20accuracy-1a7f37.svg)](results/tables/exp2_metrics.json)
+[![Python 3.14](https://img.shields.io/badge/python-3.14-3776AB.svg)](.github/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-750014.svg)](LICENSE)
+
 An AI-powered code review system built across 4 experiments: a real 1,494-PR
 GitHub dataset, trained ML merge-prediction models, an LLM review pipeline
 for human-written code, an improved LLM pipeline for AI-generated code, and
