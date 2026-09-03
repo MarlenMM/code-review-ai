@@ -480,9 +480,14 @@ Stated together here because they recur across experiments and interact:
   what the model *meant*. Its precision levels are surfaced in the UI specifically so
   this limitation is visible to a user, not hidden behind a confident-looking green
   checkmark.
-* **No git remote is configured for this repository in the environment this project was
-  built in.** The CI workflow (`.github/workflows/ci.yml`) has been verified by running
-  its exact commands locally, but never on a real hosted GitHub Actions run.
+* **CI never having run on real GitHub Actions — resolved.** This was a real limitation
+  while the project had no git remote: the workflow had only ever been verified by
+  running its exact commands locally. It now runs on every push to
+  `github.com/MarlenMM/code-review-ai` and passes on hosted runners —
+  451 Python tests and `ruff` clean on the `python` job, 66 extension unit tests and a
+  clean `tsc` on the `extension` job. The integration suite is still deliberately
+  excluded from CI (it downloads a ~300MB VS Code build and needs a live backend), so
+  those 7 tests remain locally-verified only, by design rather than by omission.
 
 None of these limitations were discovered late — each is named in the relevant lab
 report's own Problems/Reflections sections at the point the experiment that surfaced it

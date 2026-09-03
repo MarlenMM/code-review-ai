@@ -322,3 +322,22 @@ passage, and the `401 Incorrect API key provided` verification note.
   this environment. Everything up to the API-key boundary is covered; the
   quality of the comments Qwen actually returns is not, and
   `final_report.md` §9 says so.
+
+## 10. One standing limitation resolved by this pass
+
+`final_report.md` §9 and `portfolio_readiness.md` both carried "CI has never
+run on real GitHub Actions — there is no git remote". That is no longer true:
+the work was pushed to `github.com/MarlenMM/code-review-ai`, and the workflow
+runs on hosted runners and passes — **451 Python tests + `ruff` clean**
+(`python` job) and **66 extension unit tests + clean `tsc`** (`extension`
+job). `final_report.md` §9 has been rewritten to record it as resolved rather
+than silently deleted, and `vscode_extension_design.md` §10's caveat about the
+`repository` URL being a *guess* is now confirmed correct.
+
+`portfolio_readiness.md` §148 is left as written: it is a dated record of that
+session's state, not a claim about the repository now.
+
+The one CI-adjacent limitation that genuinely remains: `npm run
+test:integration` is still excluded from CI on purpose (it downloads a ~300MB
+VS Code build and needs a live backend), so those 7 tests are locally-verified
+by design, not by omission.
