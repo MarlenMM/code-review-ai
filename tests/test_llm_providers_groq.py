@@ -75,7 +75,42 @@ def test_groq_accepts_explicit_key(tmp_path):
 
 def test_provider_registry_maps_names():
     assert PROVIDERS["groq"] is GroqProvider
-    assert set(PROVIDERS) == {"groq", "gemini"}
+    assert set(PROVIDERS) == {"groq", "gemini", "qwen"}
+
+
+def _provider_flag_default(module) -> str:
+    """The `default=` of the `--provider` argument, read out of the runner's
+    own source. Both runners build their parser inline in `main()`, so there is
+    no parser object to query without executing the CLI -- the AST is the
+    honest way to assert on it."""
+    import ast
+    import inspect
+
+    tree = ast.parse(inspect.getsource(module.main))
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Call):
+            continue
+        if getattr(node.func, "attr", None) != "add_argument":
+            continue
+        if not node.args or getattr(node.args[0], "value", None) != "--provider":
+            continue
+        for kw in node.keywords:
+            if kw.arg == "default":
+                return kw.value.value
+    raise AssertionError(f"no --provider default found in {module.__name__}.main")
+
+
+@pytest.mark.parametrize("module_name", ["src.llm.run_exp3_grid", "src.llm.run_exp4_grid"])
+def test_groq_stays_the_grid_default_so_the_cache_still_replays(module_name):
+    """`data/llm_cache/` is keyed on `llama-3.1-8b-instant`, so Labs 3/4 only
+    reproduce for free under `--provider groq`. The live path moved to Qwen
+    (`src/api/llm_review.py`); the grid default deliberately did NOT, because
+    re-running a grid under a different model is a new measurement, not a
+    reproduction. This test is the guard on that distinction."""
+    import importlib
+
+    module = importlib.import_module(module_name)
+    assert _provider_flag_default(module) == "groq"
 
 
 # --------------------------------------------------------------------------- #

@@ -12,22 +12,44 @@
  * panel's click handler and any future code path (a CodeLens, a tree view)
  * share one implementation, and the navigation behaviour becomes directly
  * testable from the integration suite without simulating a webview click.
+ *
+ * Every outcome of a review renders into the panel -- result, nothing to
+ * review, or failure -- rather than into a notification toast. Progress is
+ * reported in the status bar (`ProgressLocation.Window`) instead of as a
+ * notification, because the panel is already showing the loading state and
+ * two simultaneous progress reports for one action is one too many.
  */
 
 import * as vscode from "vscode";
 import { anchorComments, type CommentLocation } from "./anchoring";
-import { reviewDiff } from "./apiClient";
+import { ReviewError, reviewDiff } from "./apiClient";
 import {
   applyToVisibleEditors,
   clearReviewComments,
   disposeDecorations,
+  initDecorations,
   setReviewComments,
 } from "./decorations";
 import { parseDiffMap } from "./diffMap";
 import { getWorkingDiff } from "./git";
-import { disposeReviewPanel, showReviewPanel } from "./panel";
+import {
+  disposeReviewPanel,
+  setRerunHandler,
+  showEmptyPanel,
+  showErrorPanel,
+  showLoadingPanel,
+  showReviewPanel,
+} from "./panel";
+
+/** The panel's "Try again" button and the Command Palette reach the same
+ * function; this stops an impatient second click starting a second review
+ * while the first is still in flight. */
+let reviewInFlight = false;
 
 export function activate(context: vscode.ExtensionContext): void {
+  initDecorations(context.extensionUri);
+  setRerunHandler(() => void reviewCurrentChanges(context));
+
   context.subscriptions.push(
     vscode.commands.registerCommand("codeReviewAi.reviewCurrentChanges", () =>
       reviewCurrentChanges(context),
@@ -70,15 +92,14 @@ async function jumpToComment(location: CommentLocation | undefined): Promise<voi
     editor.revealRange(new vscode.Range(position, position), vscode.TextEditorRevealType.InCenter);
   } catch {
     vscode.window.showWarningMessage(
-      `Code Review AI: could not open ${location.path} — the comment may refer to a file that no longer exists.`,
+      `Code Review AI: can't open ${location.path}. Comments are anchored to the diff you `
+        + `reviewed, so a file renamed or deleted since then won't be there.`,
     );
   }
 }
 
 async function reviewCurrentChanges(context: vscode.ExtensionContext): Promise<void> {
-  const folder = vscode.workspace.workspaceFolders?.[0];
-  if (!folder) {
-    vscode.window.showErrorMessage("Code Review AI: open a folder with a git repository first.");
+  if (reviewInFlight) {
     return;
   }
 
@@ -86,33 +107,61 @@ async function reviewCurrentChanges(context: vscode.ExtensionContext): Promise<v
   const backendUrl = config.get<string>("backendUrl", "http://127.0.0.1:8000");
   const mode = config.get<"fast" | "deep">("mode", "fast");
 
-  await vscode.window.withProgress(
-    {
-      location: vscode.ProgressLocation.Notification,
-      title: "Code Review AI: reviewing current changes...",
-    },
-    async () => {
-      let diff: string;
-      try {
-        diff = await getWorkingDiff(folder.uri.fsPath);
-      } catch (err) {
-        vscode.window.showErrorMessage(`Code Review AI: ${(err as Error).message}`);
-        return;
-      }
+  const folder = vscode.workspace.workspaceFolders?.[0];
+  if (!folder) {
+    showErrorPanel(context, {
+      kind: "git",
+      message: "No folder is open, so there is no working tree to diff.",
+      backendUrl,
+    });
+    return;
+  }
 
-      if (!diff.trim()) {
-        vscode.window.showInformationMessage("Code Review AI: no uncommitted changes to review.");
-        return;
-      }
+  reviewInFlight = true;
+  try {
+    let diff: string;
+    try {
+      diff = await getWorkingDiff(folder.uri.fsPath);
+    } catch (err) {
+      showErrorPanel(context, { kind: "git", message: messageOf(err), backendUrl });
+      return;
+    }
 
-      try {
-        const result = await reviewDiff(backendUrl, { diff, mode });
-        const comments = anchorComments(result.review_comments ?? [], parseDiffMap(diff));
-        showReviewPanel(context, result, comments);
-        setReviewComments(comments, folder.uri);
-      } catch (err) {
-        vscode.window.showErrorMessage(`Code Review AI: ${(err as Error).message}`);
-      }
-    },
-  );
+    if (!diff.trim()) {
+      showEmptyPanel(context);
+      return;
+    }
+
+    showLoadingPanel(context, {
+      mode,
+      filesChanged: parseDiffMap(diff).length,
+      backendUrl,
+    });
+
+    await vscode.window.withProgress(
+      { location: vscode.ProgressLocation.Window, title: "Code Review AI: reviewing your changes" },
+      async () => {
+        try {
+          const result = await reviewDiff(backendUrl, { diff, mode });
+          const comments = anchorComments(result.review_comments ?? [], parseDiffMap(diff));
+          showReviewPanel(context, result, comments);
+          setReviewComments(comments, folder.uri);
+        } catch (err) {
+          showErrorPanel(context, {
+            // Anything that isn't a `ReviewError` got past the fetch, so it
+            // is a problem with the answer rather than with reaching it.
+            kind: err instanceof ReviewError ? err.kind : "http",
+            message: messageOf(err),
+            backendUrl,
+          });
+        }
+      },
+    );
+  } finally {
+    reviewInFlight = false;
+  }
+}
+
+function messageOf(err: unknown): string {
+  return err instanceof Error ? err.message : String(err);
 }

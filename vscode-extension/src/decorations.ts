@@ -1,7 +1,16 @@
 /**
  * Inline highlights for anchored review comments: a whole-line background,
- * an overview-ruler mark, and a truncated `💬` inline hint on each line a
- * comment resolved to, with the full comment text on hover.
+ * an overview-ruler mark, a gutter icon, and a truncated inline hint on
+ * each line a comment resolved to, with the full comment text on hover.
+ *
+ * The marker is a real SVG (`media/review-comment-{dark,light}.svg`) in
+ * the gutter, not a `💬` in the inline text. An emoji is the wrong tool
+ * twice over: it renders in whatever colour and metrics the platform's
+ * emoji font decides, ignoring the user's theme entirely, and it reads as
+ * a placeholder next to VS Code's own icon language. The SVG is drawn to
+ * the same 16px/1.5-stroke spec as the panel's icons and painted in the
+ * panel's accent colour, so an anchored comment looks the same in the
+ * gutter as it does in the panel.
  *
  * Only `precision: 'line'` anchors are decorated. File-level anchors
  * (`'file'` / `'inferred-file'`, see `anchoring.ts`) deliberately get no
@@ -28,8 +37,22 @@ interface PendingDecoration {
 
 let decorationType: vscode.TextEditorDecorationType | undefined;
 let byFsPath = new Map<string, PendingDecoration[]>();
+/** Set once from `activate`; needed to resolve the gutter icon on disk. */
+let extensionUri: vscode.Uri | undefined;
 
 const MAX_INLINE_CHARS = 60;
+
+/** Called from `activate` before any review runs, so the decoration type
+ * can point at the packaged icon. */
+export function initDecorations(uri: vscode.Uri): void {
+  extensionUri = uri;
+}
+
+function iconPath(theme: "dark" | "light"): vscode.Uri | undefined {
+  return extensionUri
+    ? vscode.Uri.joinPath(extensionUri, "media", `review-comment-${theme}.svg`)
+    : undefined;
+}
 
 function getDecorationType(): vscode.TextEditorDecorationType {
   if (!decorationType) {
@@ -38,6 +61,9 @@ function getDecorationType(): vscode.TextEditorDecorationType {
       backgroundColor: new vscode.ThemeColor("editor.wordHighlightBackground"),
       overviewRulerLane: vscode.OverviewRulerLane.Right,
       overviewRulerColor: new vscode.ThemeColor("editorOverviewRuler.warningForeground"),
+      gutterIconSize: "contain",
+      dark: { gutterIconPath: iconPath("dark") },
+      light: { gutterIconPath: iconPath("light") },
     });
   }
   return decorationType;
@@ -98,12 +124,14 @@ function buildOptions(editor: vscode.TextEditor): vscode.DecorationOptions[] {
 
   return [...grouped.entries()].map(([line, texts]) => {
     const hover = new vscode.MarkdownString(
-      texts.map((t) => `💬 **Code Review AI** — ${t}`).join("\n\n---\n\n"),
+      texts.map((t) => `**Code Review AI** — ${t}`).join("\n\n---\n\n"),
     );
     hover.isTrusted = false;
+    // The gutter icon already says "there is a comment here", so the inline
+    // hint carries only what the icon can't: which comment, or how many.
     const label = texts.length > 1
-      ? `💬 ${texts.length} review comments`
-      : `💬 ${truncate(texts[0])}`;
+      ? `${texts.length} review comments`
+      : truncate(texts[0]);
 
     return {
       range: new vscode.Range(line, 0, line, 0),
