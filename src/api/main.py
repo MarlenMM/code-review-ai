@@ -25,6 +25,7 @@ from __future__ import annotations
 from typing import Literal
 
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import RedirectResponse
 from pydantic import BaseModel, Field
 
 from src.api.diff_parsing import parse_unified_diff
@@ -72,6 +73,19 @@ class ReviewResponse(BaseModel):
     review_comments: list[str] | None = None
     llm_config: str | None = None
     llm_warning: str | None = None
+
+
+@app.get("/", include_in_schema=False)
+def root() -> RedirectResponse:
+    """Send a browser to the docs instead of a bare 404.
+
+    `/` is where anyone who just started `uvicorn` looks first, and
+    `{"detail":"Not Found"}` is the API's version of a blank screen: it is
+    accurate and it helps nobody. The generated OpenAPI page lists both
+    real endpoints and lets you call them, so that is where to land. Scripts
+    are unaffected -- they want `/health`, which is unchanged.
+    """
+    return RedirectResponse(url="/docs")
 
 
 @app.get("/health")

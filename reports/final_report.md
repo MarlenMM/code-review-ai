@@ -378,9 +378,25 @@ but because Section 6's separable-axes finding justifies it structurally: reposi
 context (built with zero extra network calls, from the diff's own git hunk headings, the
 same no-fetch approximation Experiment 4 used) is the context tier proven to help, and
 multi-turn is the strategy proven to use it without self-reflection's accuracy cost. Any
-LLM failure — quota exhaustion, a network error — degrades the response to the fast-mode
-result plus a warning field, never a 500; the design decision explicitly rejected a
-canned fallback response as worse than an honest "unavailable."
+LLM failure — quota exhaustion, a network error, a missing API key — degrades the
+response to the fast-mode result plus a warning field, never a 500; the design decision
+explicitly rejected a canned fallback response as worse than an honest "unavailable."
+
+That last guarantee was tested for real, and not by choice: Groq retired
+`llama-3.1-8b-instant` after both grids had been run, so live deep-mode calls began
+returning `404 ... does not exist` — and did so as a warning field on a 200, exactly as
+designed, rather than as an outage. The fix turned on noticing that the pinned model id
+was doing two different jobs. As an **experimental constant** it is load-bearing: every
+number in Sections 5–6 was measured on it, and the ~700 cached responses those numbers
+came from are keyed on it. As a **live dependency** it merely had to answer. Only the
+second broke, so only the second changed: live deep mode now calls Qwen (`qwen-plus`,
+via DashScope's OpenAI-compatible endpoint) while the grid runners keep `--provider
+groq` as their default, which means re-running either grid still replays Sections 5–6
+from disk exactly, for free, and with no API key. Because the response cache is keyed on
+the model, the two cannot mix even accidentally. What is deliberately *not* claimed is
+that `multi_turn` @ `diff_repo_context` remains the best configuration for Qwen — that
+was measured on Llama, and re-testing it means re-running the Experiment 4 grid, so the
+endpoint labels every deep-mode result with the model that actually answered.
 
 **The VS Code extension** (`vscode-extension/`) surfaces both: a merge-probability gauge,
 and — since the backend returns review comments as prose with no location, exactly the
@@ -392,10 +408,29 @@ the design: the first pass resolved 3 of 4 real comments (missing ones that name
 function defined on an unchanged *context* line, not an added one); indexing context
 lines as a secondary source raised that to 4 of 4.
 
-**Verification, at every layer.** 414 Python tests cover mining, feature extraction, ML
+The panel was subsequently redesigned against an explicit set of constraints
+([design-constraints.md](../docs/design-constraints.md)), on the observation that a tool
+whose entire job is judging code quality should not itself look unconsidered. The
+substantive changes are three: every outcome of the command now renders *in the panel* —
+a review in flight, a clean working tree, a failed backend — where previously only a
+successful result did and the other three were notifications that vanished; the colour on
+each comment now encodes the anchoring heuristic's own confidence rather than decorating
+uniformly; and the gauge is calibrated, marking both the 50% threshold at which the
+MERGE/CLOSE call actually flips and the 72% base rate of the corpus the model was trained
+on. That last one is the difference between a number and a judgement: a bare "61%" reads
+as healthy, and against the population this model learned from it is a below-average
+change.
+
+**Verification, at every layer.** 451 Python tests cover mining, feature extraction, ML
 training/evaluation, and the LLM pipeline (LLM-provider tests mock the HTTP layer
-entirely — no test depends on live API access). The extension has 49 unit tests for its
-`vscode`-independent logic and 7 integration tests that run inside a real, unmodified VS
+entirely — no test depends on live API access, and that discipline extended to the Qwen
+client: its 27 tests cover key and region resolution, request shape, DashScope's own
+two-meanings-of-429 vocabulary, and the fact that a provider switch cannot read or
+overwrite a single cached Groq response). The extension has 66 unit tests for its
+`vscode`-independent logic — including one asserting that all four panel states ship an
+identical policy and stylesheet, and one that the error state escapes the backend's
+response body, which it interpolates and which is therefore as untrusted as model output
+— and 7 integration tests that run inside a real, unmodified VS
 Code instance — a real `git diff`, a real backend call, a real results panel, and a real
 click-to-jump navigation, not mocks. The packaged `.vsix` was independently verified by
 installing it into an isolated VS Code profile via the CLI and diffing its extracted
@@ -425,14 +460,34 @@ Stated together here because they recur across experiments and interact:
   (71.8% language coverage; a real `staticfg` library bug degrades ~27% of otherwise-valid
   Python hunks) rather than silently-imputed values — but the gap itself means the S
   feature category's true predictive ceiling, if fully measurable, is unknown.
+* **Deep mode's live provider is no longer the one its configuration was chosen on.**
+  Groq retired `llama-3.1-8b-instant`, so the live path runs Qwen `qwen-plus` while the
+  evidence for `multi_turn` @ `diff_repo_context` (Section 6) remains Llama-measured.
+  Carrying a configuration across models is a reasonable default, not a validated one:
+  whether the same strategy and context tier are optimal for Qwen is untested, and
+  answering it means re-running the Experiment 4 grid under `--provider qwen` at its own
+  quota cost. The endpoint therefore labels every deep-mode result with the model that
+  actually produced it, and Sections 5–6's numbers remain reproducible from cache under
+  the original provider.
+* **One live Qwen generation has not been exercised end-to-end.** No DashScope key is
+  configured in the environment this was built in, so the Qwen client is verified up to
+  the API-key boundary — 27 offline tests, plus a real round-trip returning
+  `401 Incorrect API key provided` (a wrong URL would have returned 404 and a malformed
+  body 400, so 401 is what confirms both) — but the quality of the review comments
+  `qwen-plus` actually returns is unmeasured here.
 * **The extension's comment-to-location anchoring is a text heuristic**, not a
   guarantee: it resolves what the model *wrote* against the diff, which is not always
   what the model *meant*. Its precision levels are surfaced in the UI specifically so
   this limitation is visible to a user, not hidden behind a confident-looking green
   checkmark.
-* **No git remote is configured for this repository in the environment this project was
-  built in.** The CI workflow (`.github/workflows/ci.yml`) has been verified by running
-  its exact commands locally, but never on a real hosted GitHub Actions run.
+* **CI never having run on real GitHub Actions — resolved.** This was a real limitation
+  while the project had no git remote: the workflow had only ever been verified by
+  running its exact commands locally. It now runs on every push to
+  `github.com/MarlenMM/code-review-ai` and passes on hosted runners —
+  451 Python tests and `ruff` clean on the `python` job, 66 extension unit tests and a
+  clean `tsc` on the `extension` job. The integration suite is still deliberately
+  excluded from CI (it downloads a ~300MB VS Code build and needs a live backend), so
+  those 7 tests remain locally-verified only, by design rather than by omission.
 
 None of these limitations were discovered late — each is named in the relevant lab
 report's own Problems/Reflections sections at the point the experiment that surfaced it

@@ -1,17 +1,35 @@
 """LLM provider clients for Experiments 3-4, with every response cached to disk
 so nothing is ever paid for (in quota or wall-clock) twice.
 
-Two providers share one base class (`CachedChatProvider`):
+Three providers share one base class (`CachedChatProvider`):
 
-- **`GroqProvider`** — the provider actually used for the Experiment 3 grid.
-  Groq's free tier serves an OpenAI-compatible `chat/completions` endpoint with
-  no credit card required (14,400 requests/day observed on
-  `llama-3.1-8b-instant`), which is what made it the working choice after Gemini
-  and DeepSeek both turned out to gate real use behind billing from this
-  account/region (see `reports/exp3_grid_run_status.md` for the full story).
+- **`QwenProvider`** — Alibaba Cloud DashScope, and the provider the **live**
+  path (the backend's deep mode) now calls. Groq retired
+  `llama-3.1-8b-instant`, so every live Groq call started returning
+  `404 The model ... does not exist`; Qwen is the replacement. DashScope
+  publishes an OpenAI-compatible `chat/completions` endpoint, so this class is
+  the same request shape as `GroqProvider` with a different base URL, key and
+  429 vocabulary.
+- **`GroqProvider`** — the provider the Experiment 3 **and** 4 grids were
+  actually run on, and therefore the one every committed metric in
+  `results/tables/exp3_*` / `exp4_*` was measured under. It is kept as the
+  default of `--provider` deliberately: the 700-odd entries in
+  `data/llm_cache/` are keyed on `llama-3.1-8b-instant`, so re-running a grid
+  under `groq` still replays from disk for free and reproduces the recorded
+  numbers exactly, whereas re-running it under `qwen` is a different
+  experiment (see the "Switching providers" note below).
 - **`GeminiProvider`** — the plan's original §5.1 choice, kept because it is
   fully built and tested and may work from a different account/region; it is a
   one-line swap (`--provider gemini`) in the grid runner.
+
+Switching providers
+-------------------
+The cache key includes `model` (see below), so a provider switch is never a
+silent one: nothing collides, nothing is invalidated, and nothing is replayed
+across providers. The practical consequence is the honest one — a grid re-run
+under a new provider is a **new measurement**, not a reproduction of the old
+one, and its numbers should not be compared cell-for-cell with Labs 3/4's
+without saying so.
 
 Why raw HTTP instead of an SDK
 -------------------------------
@@ -84,6 +102,25 @@ GEMINI_DEFAULT_MODEL = "gemini-flash-latest"
 GEMINI_DEFAULT_MIN_INTERVAL = 4.0
 DEFAULT_MODEL = GEMINI_DEFAULT_MODEL  # backwards-compat alias
 
+# ---- Qwen (Alibaba Cloud DashScope) ------------------------------------- #
+# DashScope's OpenAI-compatible mode, not its native `services/aigc/...`
+# endpoint: the compatible mode speaks the exact `chat/completions` shape
+# `GroqProvider` already builds and `_parse_chat_completion` already reads, so
+# the whole provider is a base URL, a key and a 429 dialect rather than a
+# second response format to maintain.
+#
+# Two regional endpoints exist and an API key is only valid against the one
+# its account was created in, so `DASHSCOPE_BASE_URL` overrides the default.
+QWEN_BASE_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+QWEN_INTL_BASE_URL = "https://dashscope-intl.aliyuncs.com/compatible-mode/v1"
+# `qwen-plus` is the balanced tier: markedly stronger on a reasoning-shaped
+# task like review-comment generation than the cheap tier, without `qwen-max`'s
+# cost. `qwen-turbo` is the closest analogue to the retired
+# `llama-3.1-8b-instant` if quota is the binding constraint -- override with
+# QWEN_MODEL or `--model`.
+QWEN_DEFAULT_MODEL = "qwen-plus"
+QWEN_DEFAULT_MIN_INTERVAL = 1.0
+
 # ---- Groq --------------------------------------------------------------- #
 GROQ_BASE_URL = "https://api.groq.com/openai/v1"
 GROQ_DEFAULT_MODEL = "llama-3.1-8b-instant"
@@ -118,6 +155,14 @@ class GroqAPIError(LLMAPIError):
 
 
 class GroqQuotaExceededError(GroqAPIError, LLMQuotaExceededError):
+    pass
+
+
+class QwenAPIError(LLMAPIError):
+    pass
+
+
+class QwenQuotaExceededError(QwenAPIError, LLMQuotaExceededError):
     pass
 
 
@@ -203,12 +248,19 @@ def _parse_generate_response(raw: dict) -> tuple[str, Optional[str], Optional[di
     return text, candidate.get("finishReason"), raw.get("usageMetadata")
 
 
-def _parse_chat_completion(raw: dict) -> tuple[str, Optional[str], Optional[dict]]:
-    """OpenAI-compatible `chat/completions` response (Groq) -> (text,
-    finish_reason, usage)."""
+def _parse_chat_completion(
+    raw: dict,
+    error_cls: type[LLMAPIError] = GroqAPIError,
+    provider_name: str = "Groq",
+) -> tuple[str, Optional[str], Optional[dict]]:
+    """OpenAI-compatible `chat/completions` response -> (text, finish_reason,
+    usage). Shared by Groq and Qwen (DashScope's compatible mode), which is why
+    the error class is a parameter rather than hard-coded -- a Qwen failure
+    must raise a `QwenAPIError` so `except LLMAPIError` still catches it but the
+    message names the provider that actually failed."""
     choices = raw.get("choices") or []
     if not choices:
-        raise GroqAPIError("Groq returned no choices in the response")
+        raise error_cls(f"{provider_name} returned no choices in the response")
     choice = choices[0]
     text = (choice.get("message") or {}).get("content") or ""
     return text, choice.get("finish_reason"), raw.get("usage")
@@ -382,12 +434,9 @@ class CachedChatProvider:
                 # immediately and cleanly: run_grid catches this, halts, and the
                 # partial output resumes for free once quota resets. A *per-minute*
                 # (TPM/RPM) 429 is genuinely transient and still retries below.
-                lower_msg = message.lower()
-                if "per day" in lower_msg or "(tpd)" in lower_msg or "(rpd)" in lower_msg:
-                    raise self.quota_error_cls(
-                        f"{self.provider_name} daily quota exhausted "
-                        f"(not retryable until the daily window resets): {message}"
-                    )
+                permanent = self._permanent_429_reason(message)
+                if permanent is not None:
+                    raise self.quota_error_cls(f"{self.provider_name} {permanent}: {message}")
                 if attempt >= self.max_retries:
                     raise self.quota_error_cls(
                         f"{self.provider_name} 429 persisted after {attempt} retries: {message}"
@@ -598,6 +647,20 @@ class CachedChatProvider:
     def _extract_retry_delay(self, response: requests.Response, error: dict) -> Optional[float]:
         return None
 
+    def _permanent_429_reason(self, message: str) -> Optional[str]:
+        """Why this 429 must NOT be retried, or `None` to retry it.
+
+        A per-*minute* throttle clears on its own and is worth waiting out. A
+        cap that only resets when a 24h window rolls over (or when someone tops
+        up a balance) does not, and grinding against it just burns hours -- an
+        earlier run spent ~2.5h on ~8-minute waits against an exhausted
+        500k-token/day cap. Providers word these differently, so the
+        recognition lives here and each subclass adds its own dialect."""
+        lower = message.lower()
+        if "per day" in lower or "(tpd)" in lower or "(rpd)" in lower:
+            return "daily quota exhausted (not retryable until the daily window resets)"
+        return None
+
     def _parse_response(self, raw: dict) -> tuple[str, Optional[str], Optional[dict]]:
         raise NotImplementedError
 
@@ -741,8 +804,137 @@ class GroqProvider(CachedChatProvider):
         return _parse_chat_completion(raw)
 
 
+class QwenProvider(CachedChatProvider):
+    """Alibaba Cloud DashScope (Qwen), via its OpenAI-compatible endpoint.
+
+    Structurally a sibling of `GroqProvider` -- same `chat/completions` body,
+    same bearer auth, same `_parse_chat_completion` -- with three real
+    differences, which are the only things implemented below:
+
+    * **Region.** A DashScope key is only valid against the endpoint of the
+      account's own region. The Beijing endpoint is the default; set
+      `DASHSCOPE_BASE_URL` to `QWEN_INTL_BASE_URL` for a Singapore account.
+      Guessing wrong shows up as a 401, not a routing error, so it is worth
+      knowing about before debugging the key.
+    * **Key name.** `DASHSCOPE_API_KEY` is DashScope's own documented variable
+      and is checked first, so an existing DashScope setup works untouched;
+      `QWEN_API_KEY` is accepted as an alias because that is what people
+      actually type.
+    * **429 dialect.** DashScope reports an exhausted *allowance* with the same
+      status code as a per-minute throttle, so `_permanent_429_reason` has to
+      tell them apart (see below).
+    """
+
+    provider_name = "Qwen"
+    api_error_cls = QwenAPIError
+    quota_error_cls = QwenQuotaExceededError
+
+    def __init__(
+        self,
+        api_key: Optional[str] = None,
+        model: Optional[str] = None,
+        cache_dir: str | Path = DEFAULT_CACHE_DIR,
+        session: Optional[requests.Session] = None,
+        max_retries: int = MAX_RETRIES,
+        min_interval_seconds: float = QWEN_DEFAULT_MIN_INTERVAL,
+        timeout: float = DEFAULT_TIMEOUT_SECONDS,
+        base_url: Optional[str] = None,
+    ):
+        api_key = (
+            api_key
+            or os.environ.get("DASHSCOPE_API_KEY")
+            or os.environ.get("QWEN_API_KEY")
+        )
+        if not api_key:
+            raise ValueError(
+                "No Qwen/DashScope API key found. Set DASHSCOPE_API_KEY (or "
+                "QWEN_API_KEY) in .env, or pass api_key= explicitly. Keys are "
+                "issued per region -- if yours is a Singapore account, also set "
+                f"DASHSCOPE_BASE_URL={QWEN_INTL_BASE_URL}"
+            )
+        # Model and endpoint are env-overridable because both have now bitten
+        # this project once: a pinned model id was retired upstream, and the
+        # right endpoint depends on where the account was opened. Neither
+        # should need a code change to fix.
+        super().__init__(
+            api_key=api_key,
+            model=model or os.environ.get("QWEN_MODEL") or QWEN_DEFAULT_MODEL,
+            cache_dir=cache_dir,
+            session=session,
+            max_retries=max_retries,
+            min_interval_seconds=min_interval_seconds,
+            timeout=timeout,
+            base_url=base_url or os.environ.get("DASHSCOPE_BASE_URL") or QWEN_BASE_URL,
+        )
+
+    def _endpoint_url(self) -> str:
+        return f"{self.base_url}/chat/completions"
+
+    def _headers(self) -> dict[str, str]:
+        return {"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"}
+
+    def _build_body(self, system, user, temperature, max_output_tokens):
+        messages = []
+        if system:
+            messages.append({"role": "system", "content": system})
+        messages.append({"role": "user", "content": user})
+        return {
+            "model": self.model,
+            "messages": messages,
+            "temperature": temperature,
+            "max_tokens": max_output_tokens,
+        }
+
+    def _build_body_multi(self, system, messages, temperature, max_output_tokens):
+        # Compatible mode is OpenAI-style, so the provider-neutral
+        # {"role": "user"/"assistant"} messages from `generate_conversation`
+        # need no translation -- only a system message prepended, exactly as
+        # for Groq.
+        full_messages = []
+        if system:
+            full_messages.append({"role": "system", "content": system})
+        full_messages.extend(messages)
+        return {
+            "model": self.model,
+            "messages": full_messages,
+            "temperature": temperature,
+            "max_tokens": max_output_tokens,
+        }
+
+    def _extract_retry_delay(self, response, error):
+        retry_after = response.headers.get("retry-after")
+        if retry_after:
+            try:
+                return float(retry_after)
+            except ValueError:
+                return None
+        return None
+
+    def _permanent_429_reason(self, message):
+        """DashScope returns 429 for two unrelated things: a per-minute
+        throttle (`Throttling.RateQuota`, genuinely transient) and a spent
+        allowance (`Allocated quota exceeded`, `Arrearage`), which no amount of
+        waiting inside a run will clear. Only the second must stop the run --
+        so it is recognised here rather than left to grind through five
+        backoffs and then report a misleading "persisted after N retries"."""
+        lower = message.lower()
+        if "allocated quota" in lower or "arrearage" in lower or "insufficient balance" in lower:
+            return "account quota exhausted (top up or wait for the allowance to reset)"
+        return super()._permanent_429_reason(message)
+
+    def _parse_response(self, raw):
+        return _parse_chat_completion(raw, QwenAPIError, self.provider_name)
+
+
 # Provider registry for the grid runner's --provider flag.
+#
+# `groq` stays the grid default on purpose: `data/llm_cache/` is keyed on
+# `llama-3.1-8b-instant`, so a `--provider groq` re-run still replays Labs 3/4
+# from disk and reproduces their exact numbers, even though a *live* Groq call
+# now 404s on that retired model. `qwen` is the live path (see
+# `src/api/llm_review.py`), and running a grid under it is a new measurement.
 PROVIDERS: dict[str, type[CachedChatProvider]] = {
     "groq": GroqProvider,
     "gemini": GeminiProvider,
+    "qwen": QwenProvider,
 }

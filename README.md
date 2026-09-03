@@ -24,18 +24,33 @@ see [Results](#results) for where each one comes from.
 Open a repo with uncommitted changes, run one command, and get back:
 
 * a **merge probability** (0–100%) from a Random Forest trained on 890 real
-  PRs, and
+  PRs, read against the **72% base rate** of the corpus it learned from —
+  so 61% shows up as the below-average change it is, rather than as a
+  number that merely sounds healthy, and
 * **AI-generated review comments**, each resolved to the file and line it's
   actually about, with click-to-jump navigation and inline highlights.
 
 <p align="center">
-  <img src="docs/images/vscode_panel_demo.png" width="720" alt="The extension's review-results panel: a 61% merge-probability gauge, four AI-generated review comments each anchored to a file:line, and an expandable feature breakdown." />
+  <img src="docs/images/vscode_panel_demo.png" width="620" alt="The extension's review-results panel: a 61% merge-probability gauge marked with the 50% decision threshold and the 72% corpus base rate, the reading '61% is below the 72% base rate of the 1,494 pull requests this model was trained from', and four AI-generated review comments each anchored to a file:line." />
 </p>
 
-*This is the extension's real results panel, rendered with real backend +
-live-LLM output (see [`reports/vscode_extension_design.md`](reports/vscode_extension_design.md#74-visual-check-of-the-rendered-panel)
+*This is the extension's real results panel — real backend, real
+`rf_v1_balanced` prediction (0.606), real LLM comments. See
+[`reports/vscode_extension_design.md`](reports/vscode_extension_design.md#74-visual-check-of-the-rendered-panel)
 for why this is a rendered-HTML screenshot rather than a literal
-inside-VS-Code capture, and what was independently verified either way).*
+inside-VS-Code capture, and what was independently verified either way.*
+
+The other three outcomes of the command are designed too, rather than left
+as a notification that disappears — a review in flight, a working tree with
+nothing in it, and a backend nobody started:
+
+<p align="center">
+  <img src="docs/images/panel_states_demo.png" width="820" alt="Three panel states side by side: 'Reviewing 2 changed files' with the pipeline it will run and a progress bar; 'No unstaged changes to review' explaining that git diff cannot see staged work, with a Review again button; and 'The backend isn't answering' with the uvicorn command that starts it." />
+</p>
+
+The rules these are written against — and the failure each one prevents —
+are in [`docs/design-constraints.md`](docs/design-constraints.md).
+
 The backend is also self-documenting via FastAPI's generated OpenAPI UI:
 
 <p align="center">
@@ -153,9 +168,9 @@ code-review-ai/
 │   ├── figures/              # generated plots
 │   └── tables/                # metrics, summaries (.json/.csv/.jsonl)
 ├── reports/                # 4 lab reports (.tex + compiled .pdf) + design write-ups
-├── tests/                  # 414 pytest tests
+├── tests/                  # 451 pytest tests
 ├── .github/workflows/      # CI (lint + tests, on every push)
-├── docs/images/            # README screenshots
+├── docs/                   # design-constraints.md + README screenshots
 ├── requirements.txt, ruff.toml, .env.example, LICENSE
 ```
 
@@ -176,7 +191,7 @@ The mined dataset (`data/processed/*.parquet`) and the 12 trained models
 work immediately** with no API keys and no re-mining:
 
 ```bash
-pytest tests/ -q                              # 414 tests, fully offline
+pytest tests/ -q                              # 451 tests, fully offline
 uvicorn src.api.main:app                      # backend on :8000
 
 # in another shell, from a repo with uncommitted changes:
@@ -184,12 +199,31 @@ python3 -c "import json,subprocess; print(json.dumps({'diff': subprocess.run(['g
   | curl -s -X POST localhost:8000/review -H 'Content-Type: application/json' -d @-
 ```
 
-`.env` (real `GITHUB_TOKEN`/`GROQ_API_KEY`) is only needed to *re-run*
-mining (`src/mining/`) or an LLM grid (`src/llm/run_exp3_grid.py`,
-`run_exp4_grid.py`) or to use the backend's `mode: "deep"` — Groq is the
-provider that's actually free/usable; see `.env.example`'s comment for why
-Gemini isn't, and `reports/exp3_grid_run_status.md` for the full provider
-trail (Gemini and DeepSeek both evaluated and rejected).
+`.env` is only needed to *re-run* mining (`src/mining/`, needs
+`GITHUB_TOKEN`), to re-run an LLM grid, or to use the backend's
+`mode: "deep"` (needs `DASHSCOPE_API_KEY`). Everything else — the tests, the
+fast-mode backend, the extension — works with no keys at all.
+
+**On providers.** Experiments 3 and 4 were measured on Groq
+`llama-3.1-8b-instant`, and every committed number in `results/tables/` comes
+from that model. Groq has since retired it, so a *live* Groq call now returns
+`404 The model ... does not exist`. Two consequences, kept deliberately
+separate:
+
+* **Live deep mode uses Qwen** (Alibaba Cloud DashScope, `qwen-plus`) — set
+  `DASHSCOPE_API_KEY`. The strategy, context tier and prompts are still
+  Experiment 4's; only the model behind them changed, and `/review` labels
+  every deep-mode result with the model that actually answered so it is never
+  confused with an Experiment 4 measurement.
+* **The grids still default to `--provider groq`**, because `data/llm_cache/`
+  is keyed on the retired model: a `groq` re-run replays those ~700 recorded
+  responses from disk and reproduces Labs 3/4 *exactly*, for free and with no
+  key. Re-running under `--provider qwen` is a new experiment, not a
+  reproduction of the old one.
+
+See `.env.example` for the region/model settings and
+`reports/exp3_grid_run_status.md` for the original provider trail (Gemini and
+DeepSeek both evaluated and rejected).
 
 ### VS Code extension
 
@@ -197,7 +231,7 @@ trail (Gemini and DeepSeek both evaluated and rejected).
 cd vscode-extension
 npm install
 npm run compile
-npm test                       # 49 unit tests, no VS Code/backend needed
+npm test                       # 66 unit tests, no VS Code/backend needed
 npm run package                # produces code-review-ai-0.0.1.vsix
 ```
 
@@ -216,8 +250,8 @@ Settings: `codeReviewAi.backendUrl` (default `http://127.0.0.1:8000`),
 
 | Suite | Count | Command | Needs |
 |---|---|---|---|
-| Python (mining/ML/LLM/API) | 414 | `pytest tests/ -q` | nothing — fully offline |
-| Extension unit | 49 | `cd vscode-extension && npm test` | nothing — no VS Code, no network |
+| Python (mining/ML/LLM/API) | 451 | `pytest tests/ -q` | nothing — fully offline |
+| Extension unit | 66 | `cd vscode-extension && npm test` | nothing — no VS Code, no network |
 | Extension integration | 7 | `cd vscode-extension && CODE_REVIEW_AI_TEST_WORKSPACE=<dirty repo> npm run test:integration` | a running backend + a real git repo with uncommitted changes; launches a real VS Code instance |
 
 The integration suite is genuine end-to-end verification, not a mock: it
@@ -246,12 +280,13 @@ file itself). Lint is intentionally scoped to Pyflakes + syntax errors
 | [`reports/lab2.tex`](reports/lab2.tex) / [`.pdf`](reports/lab2.pdf) | Experiment 2: features, SVM/RF, evaluation (12pp) |
 | [`reports/lab3.tex`](reports/lab3.tex) / [`.pdf`](reports/lab3.pdf) | Experiment 3: LLM review, human-written code (16pp) |
 | [`reports/lab4.tex`](reports/lab4.tex) / [`.pdf`](reports/lab4.pdf) | Experiment 4: LLM review, AI-generated code (14pp) |
-| [`reports/final_report.md`](reports/final_report.md) / [`.pdf`](reports/final_report.pdf) | **Final consolidated report** — the throughline across all 4 experiments + the system (11pp) |
+| [`reports/final_report.md`](reports/final_report.md) / [`.pdf`](reports/final_report.pdf) | **Final consolidated report** — the throughline across all 4 experiments + the system (13pp) |
 | [`reports/slides.pptx`](reports/slides.pptx) / [`slides_design.md`](reports/slides_design.md) | Presentation deck (10 slides) + how it was built and verified |
 | [`reports/verification_signoff.md`](reports/verification_signoff.md) | **Cross-report verification pass** — every quoted number re-checked against `results/tables/*.json` and the parquet data |
 | [`reports/qa_prep.md`](reports/qa_prep.md) | Defence prep: talking points for all 20 reflection questions + Lecture 1's discussion questions |
 | [`reports/api_design.md`](reports/api_design.md) | Backend design: model choice, fast/deep mode, quota strategy |
-| [`reports/vscode_extension_design.md`](reports/vscode_extension_design.md) | Extension design: core scaffold, gauge/click-to-jump/highlights, verification |
+| [`reports/vscode_extension_design.md`](reports/vscode_extension_design.md) | Extension design: core scaffold, gauge/click-to-jump/highlights, panel states, verification |
+| [`docs/design-constraints.md`](docs/design-constraints.md) | The 10 rules the review panel is written against, and the failure each one prevents |
 | [`reports/exp2_model_evaluation.md`](reports/exp2_model_evaluation.md), [`exp3_model_evaluation.md`](reports/exp3_model_evaluation.md), [`exp4_model_evaluation.md`](reports/exp4_model_evaluation.md) | Per-experiment result analysis behind each lab report |
 
 Every lab report compiles cleanly with `xelatex` (see

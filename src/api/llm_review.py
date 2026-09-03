@@ -1,5 +1,28 @@
 """Deep-mode review-comment generation for the FastAPI `/review` endpoint:
-wraps Experiment 4's best-performing config against the live Groq free tier.
+wraps Experiment 4's best-performing config against a live LLM provider.
+
+Provider -- **Qwen** (Alibaba Cloud DashScope), not the Groq free tier
+Experiments 3/4 were measured on. Groq retired `llama-3.1-8b-instant`, so
+every live deep-mode call began returning `404 The model 'llama-3.1-8b-instant'
+does not exist or you do not have access to it`. The experiments' recorded
+numbers are unaffected -- they are committed artifacts, and a `--provider groq`
+grid re-run still replays them for free from `data/llm_cache/` -- but the live
+path needed a provider that actually answers.
+
+What that does and does not mean:
+* The *config* (strategy, context tier, task, prompt text) is unchanged, so
+  this is still Experiment 4's chosen configuration; only the model behind it
+  differs.
+* The *evidence* for that config is still Experiment 4's, which was measured on
+  `llama-3.1-8b-instant`. Whether `multi_turn` @ `diff_repo_context` is also
+  the best config for Qwen is untested -- re-running the Exp-4 grid with
+  `--provider qwen` is what would answer it. Deep mode's `llm_config` label
+  names the model actually used, so a result is never mistaken for one of
+  Experiment 4's.
+
+Set `CODE_REVIEW_AI_LLM_PROVIDER` (`qwen` | `groq` | `gemini`) to change it
+without a code edit -- a pinned model id has already been retired upstream once
+during this project's life, and the fix should not require a redeploy.
 
 Config choice -- `Exp4Strategy.MULTI_TURN` @ `Exp4ContextTier.DIFF_REPO_CONTEXT`,
 task `REVIEW_COMMENT` (see `reports/exp4_model_evaluation.md` and
@@ -25,6 +48,7 @@ and works for any diff, not just PRs already in the mined dataset.
 
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass
 from functools import lru_cache
 
@@ -38,7 +62,12 @@ from src.llm.prompts import (
     build_lightweight_repo_context,
     parse_review_comments,
 )
-from src.llm.providers import GroqProvider, LLMAPIError, LLMQuotaExceededError
+from src.llm.providers import (
+    PROVIDERS,
+    CachedChatProvider,
+    LLMAPIError,
+    LLMQuotaExceededError,
+)
 from src.llm.run_exp4_grid import (
     GROQ_RUN_MAX_DIFF_CHARS,
     GROQ_RUN_MAX_FILE_CHARS,
@@ -49,6 +78,8 @@ STRATEGY = Exp4Strategy.MULTI_TURN
 TIER = Exp4ContextTier.DIFF_REPO_CONTEXT
 TASK = Task.REVIEW_COMMENT
 
+DEFAULT_PROVIDER = "qwen"
+
 
 @dataclass(frozen=True)
 class DeepReviewResult:
@@ -58,15 +89,35 @@ class DeepReviewResult:
 
 
 @lru_cache(maxsize=1)
-def _provider() -> GroqProvider:
-    return GroqProvider()
+def _provider() -> CachedChatProvider:
+    """The live provider, built once per process (the cache is on disk, so a
+    single client is enough and avoids re-reading the key per request).
+
+    `lru_cache` means an unset key raises on the *first* deep-mode request and
+    is then re-raised cheaply; `generate_review_comments` turns that into an
+    `llm_warning`, so a missing key degrades the endpoint rather than 500-ing
+    it -- the same treatment as a quota failure."""
+    name = os.environ.get("CODE_REVIEW_AI_LLM_PROVIDER", DEFAULT_PROVIDER).strip().lower()
+    provider_cls = PROVIDERS.get(name)
+    if provider_cls is None:
+        raise ValueError(
+            f"Unknown CODE_REVIEW_AI_LLM_PROVIDER={name!r}; "
+            f"expected one of {sorted(PROVIDERS)}."
+        )
+    return provider_cls()
 
 
 def _render_diff_for_llm(files: list[ParsedFile], max_total_chars: int, max_file_chars: int) -> str:
     """Same largest-churn-first, capped assembly as
     `context_builder.build_diff_text`, adapted to a `ParsedFile` list
-    instead of a `files_changed` DataFrame -- keeps a single request safely
-    under Groq's hard per-request token cap (see `run_exp4_grid.py`)."""
+    instead of a `files_changed` DataFrame.
+
+    The caps are the Groq-era ones from `run_exp4_grid.py` and are deliberately
+    kept after the move to Qwen: they are what Experiment 4's prompts were
+    measured under, so keeping them keeps deep mode's request identical in
+    shape to the grid's. Qwen's context window is far larger, so they are now
+    conservative rather than binding -- raising them would be a change to the
+    configuration, not a free win, and is untested."""
     ordered = sorted(files, key=lambda f: f.additions + f.deletions, reverse=True)
     parts: list[str] = []
     total = 0
@@ -96,9 +147,14 @@ def generate_review_comments(
 ) -> DeepReviewResult:
     """Run the deep-mode LLM pass. Never raises: any provider/network/quota
     failure comes back as a `DeepReviewResult` with `comments=None` and a
-    human-readable `warning`, so a Groq outage or an exhausted daily quota
-    degrades the `/review` endpoint to fast-mode-only output instead of a
-    500 -- the LLM pass is additive, not load-bearing."""
+    human-readable `warning`, so a provider outage, an exhausted quota or a
+    missing API key degrades the `/review` endpoint to fast-mode-only output
+    instead of a 500 -- the LLM pass is additive, not load-bearing.
+
+    The warnings name the provider that actually failed rather than a
+    hard-coded one; a message reading "Groq quota exhausted" while the request
+    went to Qwen is worse than no message, and this project has already had one
+    provider change under it."""
     diff_text = _render_diff_for_llm(files, GROQ_RUN_MAX_DIFF_CHARS, GROQ_RUN_MAX_FILE_CHARS)
     repo_context = build_lightweight_repo_context([
         {"filename": f.filename, "status": f.status, "patch": f.patch} for f in files
@@ -106,18 +162,25 @@ def generate_review_comments(
     context = AugmentedContext(diff=diff_text, repo_context=repo_context, repo=repo, title=title)
     conversation = build_exp4(TASK, STRATEGY, context, TIER)
 
+    provider = None
     try:
         provider = _provider()
         response = provider.generate_conversation(
             conversation, max_output_tokens=GROQ_RUN_MAX_OUTPUT_TOKENS
         )
     except LLMQuotaExceededError as exc:
-        return DeepReviewResult(None, None, f"Groq quota exhausted: {exc}")
+        return DeepReviewResult(None, None, f"{_provider_label(provider)} quota exhausted: {exc}")
     except LLMAPIError as exc:
         return DeepReviewResult(None, None, f"LLM call failed: {exc}")
-    except Exception as exc:  # missing GROQ_API_KEY, network errors, etc.
+    except Exception as exc:  # missing API key, bad provider name, network, ...
         return DeepReviewResult(None, None, f"LLM unavailable: {exc}")
 
     parsed = parse_review_comments(response.final_text)
-    label = f"groq/{provider.model} {STRATEGY.value} @ {TIER.value}"
+    label = f"{provider.provider_name.lower()}/{provider.model} {STRATEGY.value} @ {TIER.value}"
     return DeepReviewResult(parsed.comments, label, None)
+
+
+def _provider_label(provider: CachedChatProvider | None) -> str:
+    """Name the provider in a warning even when construction itself failed
+    (`provider` is still None at that point)."""
+    return provider.provider_name if provider is not None else "LLM provider"
