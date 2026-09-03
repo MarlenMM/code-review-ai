@@ -431,6 +431,10 @@ session created, pushed to, or confirmed resolves. Update it (here and in
 `README.md`'s clone instructions) once the real repository exists, if the
 name differs.
 
+> **Confirmed in Step 28.** The repository now exists at exactly that URL and
+> is the configured `origin`, so the guessed value turned out to be correct
+> and needs no change. CI runs there on every push (see §15).
+
 `npx vsce package` ran clean, no warnings, and the file manifest is exactly
 the intended shipped surface — 8 compiled modules, `package.json`,
 `LICENSE.txt`, `readme.md`, nothing else:
