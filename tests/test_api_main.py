@@ -32,6 +32,14 @@ def test_health():
     assert resp.json() == {"status": "ok"}
 
 
+def test_root_redirects_to_the_docs_instead_of_404ing():
+    # `/` is the first thing anyone who just ran `uvicorn` opens; a bare
+    # `{"detail":"Not Found"}` there is accurate and useless.
+    resp = client.get("/", follow_redirects=False)
+    assert resp.status_code in (307, 308)
+    assert resp.headers["location"] == "/docs"
+
+
 def test_review_fast_mode_default():
     resp = client.post("/review", json={"diff": SIMPLE_DIFF})
     assert resp.status_code == 200

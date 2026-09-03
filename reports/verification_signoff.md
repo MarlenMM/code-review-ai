@@ -256,3 +256,69 @@ instead). Adding it would mean adding content to a finished, compiled report, so
 left as-is and is recorded here instead. `portfolio_readiness.md`'s "139 default-ruff
 findings" re-runs at 127 today; the count moves with ruff's own default rule set, so the
 original measurement was annotated rather than restated.
+
+---
+
+# Pass 2 — after the panel design pass and the Groq → Qwen switch
+
+*Same discipline as the pass above: every number this pass changed was
+re-checked against the artifact that produces it, not against the previous
+document.*
+
+## 7. Numbers that moved, and what re-derived them
+
+| Claim | Was | Now | Re-derived from |
+|---|---|---|---|
+| Python tests | 414 | **451** | `pytest tests/ -q` |
+| Extension unit tests | 49 | **66** | `cd vscode-extension && npm test` |
+| `final_report.pdf` length | 11pp | **13pp** | `pdfinfo` on the recompiled PDF |
+| Deep-mode provider | Groq `llama-3.1-8b-instant` | **Qwen `qwen-plus`** | `src/api/llm_review.py`; label asserted in `tests/test_api_llm_review.py` |
+
+Updated in: `README.md` (test counts ×3, page count, provider section),
+`reports/qa_prep.md` (core-numbers table + a new provider talking point),
+`reports/final_report.md` (§8 verification paragraph, §9 limitations),
+`reports/vscode_extension_design.md` (header + §12–14),
+`reports/api_design.md` (§8), `vscode-extension/README.md`.
+
+**Deliberately not changed**, because they are dated records of the state at
+the time rather than claims about the repository now: §4 above (10pp → 11pp),
+`reports/api_design.md` §6.1 ("414 total"), `reports/portfolio_readiness.md`'s
+counts, and `reports/vscode_extension_design.md` §7.1 ("49 passing", Step 25).
+The Experiment 3/4 provider statements in `final_report.md` §5 and the lab
+reports are likewise correct as written — those experiments *were* run on Groq,
+and still reproduce from cache under `--provider groq`.
+
+## 8. The PDF recompile was verified, not assumed
+
+The exact original invocation was not recorded anywhere, so it was recovered
+before editing rather than guessed: `pandoc final_report.md
+--pdf-engine=xelatex -o final_report.pdf`, run from `reports/`, was used to
+rebuild the **unmodified** source and the result diffed against the committed
+PDF via `pdftotext -layout` — **515 lines, zero differences**. Only then was
+the source edited and rebuilt, so the 11pp → 13pp change is attributable to
+the edits and not to a different toolchain.
+
+Every new passage was then confirmed present in the recompiled PDF's own
+**text layer** (`pdftotext -layout`), not merely in the Markdown source: the
+451/66 test counts, the Qwen/DashScope paragraphs, the calibrated-gauge
+passage, and the `401 Incorrect API key provided` verification note.
+
+## 9. What is verified, and the one thing that is not
+
+* `pytest tests/ -q` → **451 passed**. `ruff check .` → **All checks passed**.
+* `npm test` → **66 passed**. `npm run test:integration` → **7 passed** in a
+  real VS Code 1.130.0 against a real backend and a real dirty repo.
+* `npx vsce ls` confirms the new gutter icons (`media/review-comment-*.svg`)
+  are actually inside the package, not just on disk.
+* DashScope's endpoint and request shape were confirmed by a **real** HTTP
+  round-trip returning `401 Incorrect API key provided` — a wrong URL returns
+  404 and a malformed body 400, so 401 is the response that validates both.
+  Both regional endpoints answer 401 rather than 404.
+* A real `POST /review` with `mode: "deep"` and no key configured returns
+  **HTTP 200** with the fast-mode prediction and an actionable `llm_warning`,
+  confirming the degrade-don't-fail contract still holds after the provider
+  change.
+* **Not verified: a live `qwen-plus` completion.** No DashScope key exists in
+  this environment. Everything up to the API-key boundary is covered; the
+  quality of the comments Qwen actually returns is not, and
+  `final_report.md` §9 says so.

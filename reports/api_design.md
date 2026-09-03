@@ -309,3 +309,108 @@ The server was stopped after verification (`pkill -f "uvicorn src.api.main:app"`
 * **No LLM-vs-ML merge-probability comparison** is exposed by the endpoint
   (§4.1) — a plausible future addition for the presentation/demo, not
   required by plan §7.1.
+
+---
+
+## 8. Provider change: Groq → Qwen for live deep mode
+
+*Added after Steps 23–27, when a live `deep`-mode call stopped working.*
+
+### 8.1 What broke
+
+Groq retired `llama-3.1-8b-instant`. Every live deep-mode request began
+coming back as:
+
+```
+LLM call failed: Groq API error 404 (invalid_request_error):
+The model `llama-3.1-8b-instant` does not exist or you do not have access to it.
+```
+
+This is not a quota problem and no amount of waiting fixes it. The model id
+was pinned in `src/llm/providers.py` (`GROQ_DEFAULT_MODEL`), which was the
+right thing to do for a reproducible experiment and the wrong thing to
+depend on for a live service.
+
+### 8.2 The distinction that drove the fix
+
+The pinned id is doing **two different jobs**, and only one of them broke:
+
+1. **As an experimental constant.** Every number in
+   `results/tables/exp3_*` and `exp4_*` was measured on that model. The
+   ~700 responses in `data/llm_cache/` are keyed on it. That record is
+   intact and must stay reproducible.
+2. **As a live service dependency.** Deep mode has to call *something that
+   answers*.
+
+Conflating the two gives two bad options: leave deep mode broken to protect
+the record, or repoint the constant and silently make every "reproduction"
+of Labs 3/4 a new measurement against a different model. Separating them
+gives the actual fix — change the live path, leave the experimental default
+alone:
+
+| | Provider | Why |
+|---|---|---|
+| Live deep mode (`src/api/llm_review.py`) | **Qwen** (`qwen-plus`) | Has to answer. Config unchanged; only the model differs. |
+| `run_exp3_grid.py` / `run_exp4_grid.py` | **Groq** (still the `--provider` default) | Cache is keyed on the retired model, so a `groq` re-run replays Labs 3/4 from disk — exactly, for free, with no key. |
+
+The cache key includes `model`, so this is enforced by construction rather
+than by discipline: a Qwen run cannot read a Groq entry (which would
+silently mix providers inside one result set) and cannot overwrite one
+(which would destroy the record). `tests/test_llm_providers_qwen.py`
+asserts both directions, and a test reads the `--provider` default out of
+each runner's AST so the grid default cannot drift back without failing.
+
+### 8.3 Why Qwen
+
+DashScope publishes an OpenAI-compatible `chat/completions` endpoint, so
+`QwenProvider` is the same request shape `GroqProvider` already builds and
+the same response `_parse_chat_completion` already reads — the whole
+provider is a base URL, a key and a 429 dialect, not a second response
+format to maintain. `qwen-plus` is the balanced tier; `qwen-turbo` is the
+closer analogue to the retired 8B model if quota binds (`QWEN_MODEL`).
+
+### 8.4 What this does *not* claim
+
+Experiment 4 chose `multi_turn` @ `diff_repo_context` on evidence gathered
+from `llama-3.1-8b-instant`. **Whether that is also the best config for Qwen
+is untested** — answering it means re-running the Exp-4 grid with
+`--provider qwen`, which is a new measurement with its own quota cost. What
+is carried over is the *configuration*, not a claim that it remains optimal.
+
+So deep mode's `llm_config` label now names the model that actually
+answered (`qwen/qwen-plus multi_turn @ diff_repo_context`), and the
+extension's panel shows it. A result can never be mistaken for one of
+Experiment 4's cells.
+
+### 8.5 Two hardening changes the outage argued for
+
+* **`CODE_REVIEW_AI_LLM_PROVIDER`** (`qwen` | `groq` | `gemini`), plus
+  `QWEN_MODEL` and `DASHSCOPE_BASE_URL`. A pinned model id has now been
+  retired upstream once during this project's life; the next time should
+  not need a code edit.
+* **Warnings name the provider that actually failed.** The quota path was
+  the literal string `"Groq quota exhausted"` regardless of who was called
+  — which, after this change, would have been an actively misleading
+  message rendered in the extension's panel.
+
+### 8.6 Verification
+
+* **451 tests pass** (415 before; 36 added — a 27-test
+  `tests/test_llm_providers_qwen.py` plus provider-selection and
+  regression tests in `tests/test_api_llm_review.py`). `ruff` clean.
+* **The endpoint is real, and the request shape is right.** A live
+  round-trip to DashScope with a deliberately invalid key returns
+  `Qwen API error 401 (invalid_request_error): Incorrect API key provided`
+  — a 404 would have meant a wrong URL and a 400 a malformed body, so 401
+  is the outcome that confirms both. Both regional endpoints answer 401
+  rather than 404.
+* **Deep mode still degrades instead of failing.** With no key set, a real
+  `POST /review` with `mode: "deep"` returns **HTTP 200** carrying the
+  fast-mode prediction plus
+  `llm_warning: "LLM unavailable: No Qwen/DashScope API key found. Set
+  DASHSCOPE_API_KEY (or QWEN_API_KEY) in .env ..."` — actionable text, and
+  the extension renders it in the panel's warning state.
+* **Not verified: a live Qwen generation.** No DashScope key is configured
+  in this environment, so the one thing still untested end-to-end is a real
+  `qwen-plus` completion and the quality of the review comments it returns.
+  Everything up to the API key boundary is covered.

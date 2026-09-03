@@ -1,12 +1,17 @@
-# VSCode Extension — Core Scaffold, Design & Verification (Steps 24–25)
+# VSCode Extension — Core Scaffold, Design & Verification (Steps 24–27)
 
 *Deliverable: `vscode-extension/` — a "Review Current Changes" command that
 reads the workspace's `git diff`, calls the Step 23 backend, and presents
 the result. **Step 24** built the functional core (§1–§4); **Step 25**
 added the polish the plan asks for — a merge-probability gauge,
-click-to-jump review comments, and inline highlights (§6 onward). Tests:
-49 unit tests (`npm test`) + 7 real end-to-end integration tests
-(`npm run test:integration`), all passing.*
+click-to-jump review comments, and inline highlights (§6–§8); **Step 26**
+packaged and verified the `.vsix` (§9–§11); **Step 27** was a design pass
+over the panel itself — the loading, empty and error states it never had,
+a real type and spacing scale, meaning-carrying colour, and the gauge's
+calibration marks (§12 onward, with the rules in
+`docs/design-constraints.md`). Tests: **66** unit tests (`npm test`) + 7
+real end-to-end integration tests (`npm run test:integration`), all
+passing.*
 
 ---
 
@@ -502,3 +507,155 @@ Covered in `reports/portfolio_readiness.md`, not here, since it's
 repo-wide rather than extension-specific: the root `README.md`, `LICENSE`,
 `.github/workflows/ci.yml`, and a `ruff` lint pass that fixed 12 real
 (if minor) issues across `src/`/`tests/` as part of adding it to CI.
+
+---
+
+# Step 27 — Panel design pass
+
+## 12. The problem: it worked, and it looked generated
+
+Steps 24–26 got the panel to *correct*. They did not get it to *designed*,
+and the difference is visible before a single number is read. Audited
+against the two checklists that circulate for this ("StyleMole" and the
+"make your vibe-coded app not look vibe-coded" list), the panel was hitting
+five signals — none fatal on its own, all of them together producing the
+look of a first-draft AI output:
+
+| Signal | Where it was | Why it reads as unfinished |
+|---|---|---|
+| No empty / loading / error state | `extension.ts` used `showInformationMessage` / `showErrorMessage` and never opened a panel | The two most likely *first* runs — a clean tree, and a backend nobody started — produced a toast that vanished and a blank screen |
+| Flat typography | six near-identical sizes (`1.05em`, `0.9em`, `0.85em`, `0.85em`, …), each picked in isolation | Heading, caption, table cell and footnote all land within a tenth of an em; the eye has nowhere to rest |
+| Ad-hoc spacing | `1.2em 1.5em 2em`, `0.35em`, `1.8em`, `0.45em` … | Everything roughly equidistant from everything else, so nothing groups |
+| A coloured strip on every comment | `ol.comments li { border-left: 2px solid … }`, uniform | A status colour applied uniformly stops being a status |
+| Emoji standing in for icons | `⚠` in the panel, `💬` in the editor decorations | The most legible "nobody designed this" tell — and functionally worse, since an emoji renders in the platform emoji font's own colour and ignores the user's theme |
+
+## 13. What changed
+
+The rules and the reasoning are in `docs/design-constraints.md`; the
+summary of the code changes:
+
+* **Four states, one shell.** `panelHtml.ts` now exports
+  `renderPanelHtml`, `renderLoadingHtml`, `renderEmptyHtml` and
+  `renderErrorHtml`, all built by one private `documentShell` so they
+  cannot drift onto separate stylesheets or separate CSPs. `panel.ts`
+  gained `showLoadingPanel` / `showEmptyPanel` / `showErrorPanel` and a
+  `rerun` message; `extension.ts` opens the panel at the *start* of a
+  review and re-renders it in place.
+* **The empty state earns its screen.** It does not say "nothing found";
+  it explains that `git.ts` runs plain `git diff` and therefore cannot see
+  staged work — which is the trap people actually hit — and gives the
+  `git restore --staged .` that undoes it.
+* **The error state is typed.** `apiClient.ts` now throws `ReviewError`
+  with `kind: "unreachable" | "http"`, because "start the backend" is the
+  right advice for a refused connection and the wrong advice for a 422.
+  Previously both were a bare `Error` and the caller could only have told
+  them apart by pattern-matching the message string.
+* **A five-step type scale and a 4px spacing rhythm**, as CSS custom
+  properties. Nothing is sized or spaced off-scale.
+* **The left bar now means something**: solid accent for a `line`-precise
+  anchor, hairline for `file`, dashed for `inferred-file`, none for
+  unanchored — the same information the chip colour and the tooltip carry.
+* **One icon family, no emoji**: three inline SVGs (16×16, 1.5 stroke,
+  `currentColor`) plus `media/review-comment-{dark,light}.svg` as a real
+  gutter icon for anchored comments.
+* **One animation, and only while something is running**: the loading
+  state's indeterminate bar, disabled under `prefers-reduced-motion`. It
+  deliberately does *not* animate step-by-step progress through the
+  pipeline — the backend reports none, so that would be invented.
+
+### 13.1 The calibration marks — the one detail nothing generates
+
+The gauge gained two marks the arc alone cannot express: a **notch at
+50%**, the threshold at which `src/api/main.py` actually flips MERGE to
+CLOSE, and a **line at 72%**, the merge rate of the 1,494 mined PRs the
+model was trained from (`results/tables/exp1_summary.json` →
+`merge_status.pooled.merge_rate` = 0.7195). Both carry an SVG `<title>`, so
+they explain themselves on hover instead of needing a legend, and they are
+drawn differently on purpose: the threshold is a hard rule cut *through*
+the ring, the base rate a reference laid *over* it.
+
+This matters beyond decoration. A bare "61%" reads as healthy. Against the
+corpus the model learned from, 61% is a **below-average** change, and the
+sentence beside the gauge now says so in those words. It is also the one
+element no component library could produce, because it requires knowing
+what this particular model was trained on.
+
+## 14. Verification performed
+
+### 14.1 Unit tests — 66 passing (`npm test`)
+
+49 before, 66 after; 17 added, none removed, and every pre-existing
+assertion still passes unchanged — the redesign did not require loosening
+a single existing test. The new ones cover:
+
+* each new state's *content*, not just that it renders: that the loading
+  state names the real pipeline and only promises a Groq call in `deep`
+  mode; that the empty state explains the staged-changes trap; that an
+  `unreachable` error offers the `uvicorn` command and an `http` error
+  explicitly does not.
+* **the error state's escaping.** `apiClient.ts` puts the backend's own
+  response body into the error message, so `renderErrorHtml` interpolates
+  remote text — the same class of untrusted input as the LLM comments, and
+  now covered by the same class of test.
+* that all four states ship an identical CSP and identical design tokens,
+  which is what stops them drifting apart later.
+* that no state falls back to an emoji, by regex over the emoji,
+  pictograph and dingbat blocks.
+* that the thousands separator in "1,494" is locale-independent —
+  `toLocaleString` would render "1.494" on a de-DE extension host.
+
+### 14.2 Visual check, in both themes
+
+As in §7.4: `panelHtml.ts` imports nothing from `vscode`, so all four
+states were rendered to standalone HTML, served locally, and opened with
+VS Code's own Dark Modern **and** Light Modern `--vscode-*` token values
+injected. Both gauge marks are legible against the arc and against the
+track in each theme (the notch reads as a gap in the ring precisely
+because it is drawn in the panel's own background colour), the type scale
+produces visible hierarchy at real size, and the comment bars are
+distinguishable at 2px.
+
+### 14.3 The README screenshots are real output, re-made
+
+`docs/images/vscode_panel_demo.png` was regenerated rather than left
+stale — a redesigned panel behind an old screenshot is a README that
+lies. It is a genuine end-to-end run: the real backend on a throwaway
+two-file repo, the real `rf_v1_balanced` prediction (**0.606 → 61%
+MERGE**, 28 real features), and the real LLM review comments, which
+replayed from `data/llm_cache/` — the same recorded Groq response the
+original screenshot was made from, so the evidence is real model output
+rather than text written to look like it. (Groq was still the live provider
+when this was captured; see §14.4.) `panel_states_demo.png` is the
+three non-result states, each an actual render of its own function.
+
+### 14.4 A real defect found while doing this
+
+Reproducing a live `deep`-mode call surfaced something unrelated to the
+design work and worth recording: Groq now returns **404
+`The model 'llama-3.1-8b-instant' does not exist or you do not have access
+to it`**. That model id is pinned in `src/llm/providers.py`
+(`GROQ_DEFAULT_MODEL`) and is the one every Experiment 3/4 result was
+produced with, so live `deep` mode is currently broken against Groq even
+though the cache still replays fine.
+
+**Resolved in Step 28** (`reports/api_design.md` §8), and worth recording
+how, because the naive fix was the wrong one. The pinned id was doing two
+jobs: it was an *experimental constant* (every Lab 3/4 number was measured
+on it, and `data/llm_cache/` is keyed on it) and a *live dependency*. Only
+the second broke. So the live path moved to Qwen (`qwen-plus`, via
+DashScope's OpenAI-compatible endpoint) while the grid runners kept
+`--provider groq` as their default — which means a grid re-run still
+replays Labs 3/4 from disk, exactly and for free, instead of silently
+becoming a new measurement against a different model.
+
+The failure was at least *visible* rather than silent in the meantime —
+`llm_review.py` degrades to the fast-mode result plus an `llm_warning`,
+which the panel renders in the warning state with a real icon. That path is
+still what a missing DashScope key hits today, and the message it now
+carries names the variable to set.
+
+One knock-on for this document: `docs/images/vscode_panel_demo.png` (§14.3)
+shows real LLM comments replayed from the **Groq-era** cache, which is what
+the config label in the screenshot says. It is an accurate record of a real
+run; it is not a Qwen result.
+

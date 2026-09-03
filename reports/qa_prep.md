@@ -37,8 +37,22 @@ aloud; do not read the Numbers rows verbatim — pick the one that fits.
 | **Exp4 sample** | **3 complete PRs** (2:1), all AI-authored, **148/384 cells, 0 failures** |
 | **Exp4 headline** | `role_based`/`few_shot`/`cot` = **0.0 not-merged recall on every tier**; only `self_reflection` (0.60) and `multi_turn` (0.50) ever catch one |
 | **Exp4 context** | repo context lifts recall **0.0 → 0.4**, macro-F1 peaks 0.498; `complete` tier regresses to **0.0** |
-| **System** | fast = `rf_v1_balanced`; deep = `multi_turn`@`diff_repo_context` on Groq `llama-3.1-8b-instant` |
-| **Tests** | 414 Python + 49 extension unit + 7 real-VS-Code integration |
+| **System** | fast = `rf_v1_balanced`; deep = `multi_turn`@`diff_repo_context`. **Measured** on Groq `llama-3.1-8b-instant`; **live today** on Qwen `qwen-plus` (Groq retired the model — see below) |
+| **Tests** | 451 Python + 66 extension unit + 7 real-VS-Code integration |
+
+**If you are asked why the provider changed** (the one thing on this page that is
+not in the lab reports). Groq retired `llama-3.1-8b-instant` after Experiments 3
+and 4 were run, so live calls started returning `404 ... does not exist`. The
+answer to give is the *distinction*, not the swap: that model id was doing two
+jobs — an **experimental constant** (every Exp3/4 number was measured on it, and
+`data/llm_cache/`'s ~700 responses are keyed on it) and a **live dependency**.
+Only the second broke. So the live path moved to Qwen, and the grid runners kept
+`--provider groq` as their default, which means a re-run still replays Labs 3/4
+from disk *exactly* and for free. The cache key includes the model, so the two
+cannot mix even by accident. What is **not** claimed: that `multi_turn` @
+`diff_repo_context` is still the best config for Qwen — that was measured on
+Llama, and re-testing it means re-running the Exp4 grid. Full write-up:
+`reports/api_design.md` §8.
 
 **Two bases to have straight, in case you're asked to reproduce a figure.**
 1. **"Pooled" means one confusion matrix over all the predictions, not the mean of
