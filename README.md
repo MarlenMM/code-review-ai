@@ -6,16 +6,23 @@
 [![Python 3.14](https://img.shields.io/badge/python-3.14-3776AB.svg)](.github/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-750014.svg)](LICENSE)
 
-An AI-powered code review system built across 4 experiments: a real 1,494-PR
-GitHub dataset, trained ML merge-prediction models, an LLM review pipeline
-for human-written code, an improved LLM pipeline for AI-generated code, and
-a FastAPI backend + VS Code extension that wrap the best of both into one
-"Review Current Changes" command.
+**Can an LLM review pull requests better than a model trained on a project's
+own history?** Four experiments on **1,494 real pull requests** mined from five
+large open-source repositories, and a FastAPI backend + VS Code extension that
+ship the best of both behind one *Review Current Changes* command.
 
-Built for **Project II — AI-powered Code Review**, HIT Global Summer School
-"Intelligence Leading the Frontier, Computing Shaping the Future" (Jul
-2026). Every number on this page is pulled from a real run, not estimated —
-see [Results](#results) for where each one comes from.
+| | |
+|---|---|
+| Dataset | **1,494 PRs** from `microsoft/vscode`, `dotnet/runtime`, `dotnet/aspnetcore`, `microsoft/semantic-kernel` and `home-assistant/core`; **380 (25.4%)** authored by an AI agent, detected with 0 false positives on a 59-PR hand check |
+| Trained model | Random Forest, **76.8%** accuracy and **42.5%** not-merged recall on a time-based hold-out, after removing review-process features that leak the outcome (a feature set that includes them reaches 98%+ ROC-AUC) |
+| LLM review | 4 context levels × 4 prompt strategies on a 16-PR grid: the best configuration **matched, not beat**, the trained model (93.75% accuracy, 0.816 macro-F1, an identical confusion matrix); pooled over all 16 it falls to **0.525** macro-F1 |
+| AI-written PRs | In a 5 × 5 grid, the three standard prompting strategies caught **no** bad AI-authored PR at any context level; only self-reflection (0.60 not-merged recall) and multi-turn (0.50) did. Both LLM samples were capped by a free-tier quota, and the reports say so |
+| System | FastAPI backend (fast mode: the Random Forest; deep mode: a multi-turn LLM review) and a TypeScript VS Code extension; **451** Python and **66** extension unit tests, plus 7 integration tests in a real VS Code |
+
+Built for **Project II — AI-powered Code Review** at the HIT Global Summer
+School *Intelligence Leading the Frontier, Computing Shaping the Future*
+(Harbin, July 2026), completed individually. Every number on this page comes
+from a committed artifact — see [Results](#results) for where each one lives.
 
 ---
 
@@ -179,7 +186,7 @@ code-review-ai/
 ## Setup
 
 ```bash
-git clone <this repo>
+git clone https://github.com/MarlenMM/code-review-ai.git
 cd code-review-ai
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
@@ -260,9 +267,8 @@ real `git diff` to the real backend, executes the real command, and asserts
 the results panel actually opens and click-to-jump actually navigates. See
 [`reports/vscode_extension_design.md`](reports/vscode_extension_design.md)
 for what it caught (two real bugs) and why it exists instead of GUI
-automation (VS Code is only grantable at click-only access to computer-use
-tooling in this environment — no typing, so the Command Palette isn't
-reachable that way).
+automation (the command is only reachable by typing into the Command
+Palette, which the available desktop-automation tooling could not do).
 
 CI (`.github/workflows/ci.yml`) runs the Python and extension-unit suites
 plus lint on every push — not the integration suite, which needs a live
@@ -283,7 +289,6 @@ file itself). Lint is intentionally scoped to Pyflakes + syntax errors
 | [`reports/final_report.md`](reports/final_report.md) / [`.pdf`](reports/final_report.pdf) | **Final consolidated report** — the throughline across all 4 experiments + the system (13pp) |
 | [`reports/slides.pptx`](reports/slides.pptx) / [`slides_design.md`](reports/slides_design.md) | Presentation deck (10 slides) + how it was built and verified |
 | [`reports/verification_signoff.md`](reports/verification_signoff.md) | **Cross-report verification pass** — every quoted number re-checked against `results/tables/*.json` and the parquet data |
-| [`reports/qa_prep.md`](reports/qa_prep.md) | Defence prep: talking points for all 20 reflection questions + Lecture 1's discussion questions |
 | [`reports/api_design.md`](reports/api_design.md) | Backend design: model choice, fast/deep mode, quota strategy |
 | [`reports/vscode_extension_design.md`](reports/vscode_extension_design.md) | Extension design: core scaffold, gauge/click-to-jump/highlights, panel states, verification |
 | [`docs/design-constraints.md`](docs/design-constraints.md) | The 10 rules the review panel is written against, and the failure each one prevents |

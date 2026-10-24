@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+message: "If you use this software or its dataset, please cite it as below."
+title: "Code Review AI: can an LLM review pull requests better than a trained model?"
+type: software
+authors:
+  - family-names: Melis
+    given-names: Marlen
+    affiliation: KAIST
+version: 1.1.0
+date-released: "2026-09-03"
+license: MIT
+repository-code: "https://github.com/MarlenMM/code-review-ai"
+keywords:
+  - code review
+  - mining software repositories
+  - pull requests
+  - merge prediction
+  - large language models
+  - prompt engineering
+  - AI-generated code
+  - VS Code extension
+abstract: >-
+  Four experiments on 1,494 closed pull requests mined from five large open-source repositories
+  (microsoft/vscode, dotnet/runtime, dotnet/aspnetcore, microsoft/semantic-kernel, home-assistant/core),
+  25.4% of them authored by an AI coding agent: leakage-free merge prediction with SVM and Random Forest
+  models, a 4 x 4 grid of LLM context levels and prompt strategies on human-written code, a 5 x 5 grid on
+  AI-generated code, and a FastAPI backend with a VS Code extension that combines the trained model and
+  the best LLM configuration. Built for Project II (AI-powered Code Review) of the HIT Global Summer
+  School, July 2026.

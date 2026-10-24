@@ -6,8 +6,7 @@ analysis. This step is prompt/context **design only** — no API calls, no grid
 run.*
 
 *Every population figure below is computed from the real 1,494-PR mined dataset
-in `data/processed/*.parquet` (see `scratch`-free reproductions in the Step-19
-session), not estimated.*
+in `data/processed/*.parquet` (reproduced in Step 19), not estimated.*
 
 Deliverable: `src/llm/prompts/` extended with `context_aug.py`,
 `conversations.py`, `exp4_examples.py`, and additions to `schema.py` /

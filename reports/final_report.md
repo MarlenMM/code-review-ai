@@ -357,7 +357,7 @@ but only once paired with a strategy disposed to actually reconsider in light of
 # 8. The system — backend and VS Code extension
 
 *Full write-ups: [api_design.md](api_design.md), [vscode_extension_design.md](vscode_extension_design.md),
-[portfolio_readiness.md](portfolio_readiness.md).*
+[repository_engineering.md](repository_engineering.md).*
 
 The system does not pick a winner between the trained model and the LLM — it encodes
 what Sections 4–6 actually found about each one's reliability.

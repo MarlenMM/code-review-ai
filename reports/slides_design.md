@@ -32,7 +32,7 @@ per the instruction not to dump every plot in.
 Every stat card and table cell was checked directly against
 `results/tables/{exp1_summary,exp2_metrics,exp3_metrics,exp4_metrics}.json`
 before being typed into the deck — not copied from `final_report.md` on
-trust. All matched exactly (see the Step 28 session's verification pass);
+trust. All matched exactly (see the Step 28 verification pass);
 no discrepancies were found between the report and the underlying JSON at
 the time of this build.
 

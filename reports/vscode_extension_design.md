@@ -114,15 +114,13 @@ open real VS Code and click through it (as was done for the FastAPI
 backend with `curl` in Step 23). This was attempted and abandoned for a
 concrete reason, not skipped by default:
 
-VS Code is installed on this machine (`/Applications/Visual Studio
-Code.app`), and computer-use tooling can see and screenshot it — but
-requesting control access showed that IDE/terminal-category apps are only
-ever grantable at **"click" tier**: visible and left-clickable, but typing,
-key presses, and shortcuts are blocked. Verifying this command requires
-opening the Command Palette and *typing* "Review Current Changes" (there's
-no menu item), which click-only access cannot do. Retrying the grant
-doesn't change the tier — it's a hard rule for this app category, not a
-per-request choice.
+Verifying this command means opening the Command Palette and *typing*
+"Review Current Changes" (there's no menu item). The desktop-automation
+tooling available for this project could see, screenshot and click inside
+VS Code, but could not type into an IDE window, so it could not reach the
+command. Rather than settle for a manual check, the verification moved into
+VS Code itself: an integration suite that launches a real instance and
+drives the extension through its API.
 
 `@vscode/test-electron` is not a fallback for that gap, it's the *better*
 tool anyway: it drives the extension host directly and programmatically
@@ -149,8 +147,8 @@ non-2xx response, wraps a network failure with the backend URL).
 
 ### 4.2 Real end-to-end integration test (`npm run test:integration`)
 
-Set up a throwaway git repo (outside this project, in the session
-scratchpad) with a real committed file and an uncommitted edit, and started
+Set up a throwaway git repo (outside this project, in a
+temporary directory) with a real committed file and an uncommitted edit, and started
 the real Step 23 backend (`uvicorn src.api.main:app`). Then:
 
 ```
@@ -425,11 +423,9 @@ field.
 
 **Honest caveat on `repository`:** no git remote is configured in this
 repo (`git remote -v` is empty — this has been worked on entirely locally).
-`https://github.com/MarlenMM/code-review-ai` is a best-effort value
-inferred from the project plan's own stated GitHub handle, not a URL this
-session created, pushed to, or confirmed resolves. Update it (here and in
-`README.md`'s clone instructions) once the real repository exists, if the
-name differs.
+`https://github.com/MarlenMM/code-review-ai` was first inferred from the
+project plan's GitHub handle, before the repository existed; it has since
+been confirmed as the published repository.
 
 > **Confirmed in Step 28.** The repository now exists at exactly that URL and
 > is the configured `origin`, so the guessed value turned out to be correct
@@ -505,9 +501,9 @@ The isolated `/tmp` profile dirs were deleted after verification; the
 built `.vsix` itself is not committed (`*.vsix` is gitignored — regenerate
 with `npm run package`).
 
-## 11. What "portfolio-ready" added outside the extension
+## 11. What the repository-wide pass added outside the extension
 
-Covered in `reports/portfolio_readiness.md`, not here, since it's
+Covered in `reports/repository_engineering.md`, not here, since it's
 repo-wide rather than extension-specific: the root `README.md`, `LICENSE`,
 `.github/workflows/ci.yml`, and a `ruff` lint pass that fixed 12 real
 (if minor) issues across `src/`/`tests/` as part of adding it to CI.
