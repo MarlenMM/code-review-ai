@@ -239,10 +239,12 @@ cd vscode-extension
 npm install
 npm run compile
 npm test                       # 66 unit tests, no VS Code/backend needed
-npm run package                # produces code-review-ai-0.0.1.vsix
+npm run package                # produces code-review-ai-1.1.0.vsix
 ```
 
-Install the packaged extension (`code --install-extension code-review-ai-0.0.1.vsix`,
+A prebuilt `code-review-ai-1.1.0.vsix` is attached to the
+[v1.1.0 release](https://github.com/MarlenMM/code-review-ai/releases/tag/v1.1.0).
+Install the packaged extension (`code --install-extension code-review-ai-1.1.0.vsix`,
 or the Extensions view's "Install from VSIX..."), or press `F5` inside
 `vscode-extension/` for a dev-mode Extension Development Host. Either way,
 start the backend first, open a folder with uncommitted git changes, and

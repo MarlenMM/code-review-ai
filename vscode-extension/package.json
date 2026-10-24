@@ -2,7 +2,7 @@
   "name": "code-review-ai",
   "displayName": "Code Review AI",
   "description": "Review your current uncommitted changes: a merge-probability prediction plus AI-generated review comments, powered by the Code Review AI FastAPI backend (src/api/main.py).",
-  "version": "0.0.1",
+  "version": "1.1.0",
   "publisher": "MarlenMM",
   "private": true,
   "license": "MIT",
@@ -74,7 +74,7 @@
     "pretest": "npm run compile",
     "test": "node --test out/test/*.test.js",
     "test:integration": "npm run compile && node ./out/test/runTest.js",
-    "package": "vsce package"
+    "package": "vsce package --no-dependencies"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.10",
